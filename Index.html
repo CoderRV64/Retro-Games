@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+
+    <meta name="theme-color" content="#111111">
+    <meta name="description" content="Retro Games - Juegos retro propios">
+
+    <title>Retro Games</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        html,
+        body {
+            margin: 0;
+            min-height: 100%;
+        }
+
+        body {
+            background: #111;
+            color: #fff;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        .app {
+            width: min(1100px, 100%);
+            margin: 0 auto;
+            padding: 24px 16px 40px;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+
+        .logo {
+            margin: 0;
+            font-size: clamp(2rem, 8vw, 4rem);
+            font-weight: 900;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+        }
+
+        .subtitle {
+            margin: 8px 0 0;
+            color: #aaa;
+            font-size: 1rem;
+        }
+
+        #games {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 18px;
+        }
+
+        .game-card {
+            display: flex;
+            flex-direction: column;
+            min-height: 220px;
+            padding: 20px;
+            background: #1b1b1b;
+            border: 2px solid #333;
+            border-radius: 14px;
+            transition: transform 0.15s ease, border-color 0.15s ease;
+        }
+
+        .game-card:hover {
+            transform: translateY(-4px);
+            border-color: #fff;
+        }
+
+        .game-icon {
+            display: grid;
+            place-items: center;
+            width: 70px;
+            height: 70px;
+            margin-bottom: 18px;
+            background: #000;
+            border: 2px solid #444;
+            border-radius: 10px;
+            font-size: 2rem;
+        }
+
+        .game-name {
+            margin: 0 0 8px;
+            font-size: 1.4rem;
+        }
+
+        .game-description {
+            flex: 1;
+            margin: 0 0 20px;
+            color: #aaa;
+            line-height: 1.5;
+        }
+
+        .play-button {
+            display: block;
+            width: 100%;
+            padding: 14px;
+            border-radius: 8px;
+            background: #fff;
+            color: #111;
+            text-align: center;
+            text-decoration: none;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .play-button:hover {
+            background: #ddd;
+        }
+
+        .error {
+            padding: 20px;
+            background: #241414;
+            border: 2px solid #633;
+            border-radius: 10px;
+            color: #f99;
+        }
+
+        footer {
+            margin-top: 40px;
+            text-align: center;
+            color: #666;
+            font-size: 0.85rem;
+        }
+
+        @media (max-width: 500px) {
+            .app {
+                padding: 20px 12px 30px;
+            }
+
+            #games {
+                grid-template-columns: 1fr;
+            }
+
+            .game-card {
+                min-height: 200px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="app">
+
+    <header>
+        <h1 class="logo">Retro Games</h1>
+        <p class="subtitle">Juegos retro propios</p>
+    </header>
+
+    <main>
+        <section id="games" aria-label="Lista de juegos">
+            <p>Cargando juegos...</p>
+        </section>
+    </main>
+
+    <footer>
+        Retro Games
+    </footer>
+
+</div>
+
+<script>
+    /*
+     * Carga Games.yaml y genera automáticamente
+     * las tarjetas de los juegos.
+     */
+
+    async function loadGames() {
+        const container = document.getElementById("games");
+
+        try {
+            const response = await fetch("Games.yaml");
+
+            if (!response.ok) {
+                throw new Error("No se pudo cargar Games.yaml");
+            }
+
+            const yaml = await response.text();
+            const games = parseGamesYaml(yaml);
+
+            if (games.length === 0) {
+                container.innerHTML = `
+                    <div class="error">
+                        No hay juegos disponibles.
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = "";
+
+            games.forEach(game => {
+                const card = document.createElement("article");
+                card.className = "game-card";
+
+                card.innerHTML = `
+                    <div class="game-icon">🎮</div>
+
+                    <h2 class="game-name">
+                        ${escapeHTML(game.name)}
+                    </h2>
+
+                    <p class="game-description">
+                        ${escapeHTML(
+                            game.description || "Un juego retro propio."
+                        )}
+                    </p>
+
+                    <a
+                        class="play-button"
+                        href="${escapeAttribute(game.url)}"
+                    >
+                        Jugar
+                    </a>
+                `;
+
+                container.appendChild(card);
+            });
+
+        } catch (error) {
+            console.error(error);
+
+            container.innerHTML = `
+                <div class="error">
+                    No se pudo cargar la lista de juegos.
+                </div>
+            `;
+        }
+    }
+
+
+    /*
+     * Parser sencillo para el formato de Games.yaml.
+     *
+     * No necesitamos una librería externa para nuestro
+     * formato simple.
+     */
+    function parseGamesYaml(yaml) {
+        const games = [];
+        let currentGame = null;
+
+        const lines = yaml.split(/\r?\n/);
+
+        for (const line of lines) {
+            const trimmed = line.trim();
+
+            if (!trimmed || trimmed.startsWith("#")) {
+                continue;
+            }
+
+            if (trimmed.startsWith("- id:")) {
+                if (currentGame) {
+                    games.push(currentGame);
+                }
+
+                currentGame = {
+                    id: getValue(trimmed),
+                    name: "",
+                    url: "",
+                    description: ""
+                };
+
+                continue;
+            }
+
+            if (!currentGame) {
+                continue;
+            }
+
+            if (trimmed.startsWith("name:")) {
+                currentGame.name = getValue(trimmed);
+            }
+
+            if (trimmed.startsWith("url:")) {
+                currentGame.url = getValue(trimmed);
+            }
+
+            if (trimmed.startsWith("description:")) {
+                currentGame.description = getValue(trimmed);
+            }
+        }
+
+        if (currentGame) {
+            games.push(currentGame);
+        }
+
+        return games;
+    }
+
+
+    function getValue(line) {
+        let value = line.substring(line.indexOf(":") + 1).trim();
+
+        if (
+            (value.startsWith('"') && value.endsWith('"')) ||
+            (value.startsWith("'") && value.endsWith("'"))
+        ) {
+            value = value.substring(1, value.length - 1);
+        }
+
+        return value;
+    }
+
+
+    function escapeHTML(value) {
+        return String(value)
+            .replaceAll("&", "&amp;")
+            .replaceAll("<", "&lt;")
+            .replaceAll(">", "&gt;")
+            .replaceAll('"', "&quot;")
+            .replaceAll("'", "&#039;");
+    }
+
+
+    function escapeAttribute(value) {
+        return String(value)
+            .replaceAll("&", "&amp;")
+            .replaceAll('"', "&quot;")
+            .replaceAll("<", "&lt;")
+            .replaceAll(">", "&gt;");
+    }
+
+
+    loadGames();
+</script>
+
+</body>
+</html>
