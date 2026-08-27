@@ -1,1536 +1,587 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0, viewport-fit=cover"
-    >
-
-    <meta name="theme-color" content="#050505">
-
-    <title>Pixel Breaker</title>
-
-    <style>
-
-        :root {
-            --black: #050505;
-            --black-soft: #0a0a0a;
-            --green: #00ff66;
-            --green-dark: #008f3d;
-            --blue: #008cff;
-            --blue-dark: #00529b;
-            --white: #eafff2;
-            --gray: #789184;
-        }
-
-        * {
-            box-sizing: border-box;
-            touch-action: none;
-        }
-
-        html,
-        body {
-            margin: 0;
-            width: 100%;
-            height: 100%;
-            overflow: hidden;
-        }
-
-        body {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-
-            background: var(--black);
-            color: var(--white);
-
-            font-family: monospace;
-        }
-
-        /*
-         * Fondo retro
-         */
-
-        body::before {
-            content: "";
-
-            position: fixed;
-            inset: 0;
-
-            pointer-events: none;
-
-            background-image:
-                linear-gradient(
-                    rgba(0, 255, 102, 0.025) 1px,
-                    transparent 1px
-                ),
-                linear-gradient(
-                    90deg,
-                    rgba(0, 140, 255, 0.025) 1px,
-                    transparent 1px
-                );
-
-            background-size: 32px 32px;
-        }
-
-        /*
-         * Contenedor
-         */
-
-        .game {
-            position: relative;
-
-            width: min(900px, 100vw);
-            height: min(700px, 100vh);
-
-            display: flex;
-            flex-direction: column;
-
-            background: var(--black-soft);
-        }
-
-        /*
-         * Barra superior
-         */
-
-        .topbar {
-            display: flex;
-
-            align-items: center;
-            justify-content: space-between;
-
-            gap: 10px;
-
-            padding: 10px;
-
-            background: #080808;
-
-            border-bottom: 2px solid var(--green-dark);
-
-            z-index: 2;
-        }
-
-        .title {
-            color: var(--green);
-
-            font-weight: 900;
-
-            letter-spacing: 1px;
-        }
-
-        .score {
-            color: var(--blue);
-
-            font-weight: 900;
-        }
-
-        .back {
-            padding: 6px 10px;
-
-            color: var(--green);
-
-            text-decoration: none;
-
-            border: 1px solid var(--green-dark);
-            border-radius: 4px;
-        }
-
-        .back:hover {
-            border-color: var(--green);
-        }
-
-        /*
-         * Canvas
-         */
-
-        canvas {
-            display: block;
-
-            width: 100%;
-            height: 100%;
-
-            flex: 1;
-            min-height: 0;
-
-            background: #020202;
-
-            image-rendering: pixelated;
-            image-rendering: crisp-edges;
-        }
-
-        /*
-         * Controles móviles
-         */
-
-        .controls {
-            display: flex;
-
-            justify-content: center;
-
-            gap: 12px;
-
-            padding: 10px;
-
-            background: #080808;
-
-            border-top: 2px solid var(--blue-dark);
-
-            z-index: 2;
-        }
-
-        .control {
-            width: 100px;
-            height: 52px;
-
-            background: #0a0a0a;
-
-            color: var(--blue);
-
-            border: 2px solid var(--blue-dark);
-            border-radius: 6px;
-
-            font-family: monospace;
-            font-size: 1.4rem;
-            font-weight: bold;
-
-            user-select: none;
-        }
-
-        .control:active {
-            background: var(--blue);
-            color: #000;
-        }
-
-        /*
-         * Pantalla de Game Over / inicio
-         */
-
-        .message {
-            position: absolute;
-
-            left: 50%;
-            top: 50%;
-
-            transform: translate(-50%, -50%);
-
-            width: min(330px, 85%);
-
-            padding: 25px;
-
-            display: none;
-
-            text-align: center;
-
-            background: #050505;
-
-            border: 2px solid var(--green);
-
-            box-shadow:
-                0 0 25px rgba(0, 255, 102, 0.15);
-
-            z-index: 5;
-        }
-
-        .message h1 {
-            margin: 0 0 12px;
-
-            color: var(--green);
-
-            font-size: 1.8rem;
-
-            letter-spacing: 2px;
-        }
-
-        .message p {
-            color: var(--gray);
-
-            line-height: 1.5;
-        }
-
-        .message button {
-            margin-top: 10px;
-
-            padding: 12px 20px;
-
-            background: transparent;
-
-            border: 2px solid var(--blue);
-
-            border-radius: 5px;
-
-            color: var(--blue);
-
-            font-family: monospace;
-            font-weight: bold;
-
-            cursor: pointer;
-        }
-
-        .message button:hover {
-            background: var(--blue);
-
-            color: #000;
-        }
-
-        /*
-         * En ordenador ocultamos los controles táctiles.
-         */
-
-        @media (min-width: 700px) {
-
-            .controls {
-                display: none;
-            }
-
-        }
-
-        /*
-         * Pantallas pequeñas en horizontal.
-         */
-
-        @media (max-height: 500px) {
-
-            .controls {
-                display: none;
-            }
-
-            .topbar {
-                padding: 6px 10px;
-            }
-
-        }
-
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#050505">
+<title>Pixel Breaker</title>
+
+<style>
+:root{
+ --black:#050505;
+ --green:#00ff66;
+ --green2:#008f3d;
+ --blue:#008cff;
+ --blue2:#00529b;
+ --white:#eafff2;
+ --gray:#789184;
+}
+
+*{
+ box-sizing:border-box;
+ touch-action:none;
+}
+
+html,body{
+ margin:0;
+ width:100%;
+ height:100%;
+ overflow:hidden;
+}
+
+body{
+ display:flex;
+ align-items:center;
+ justify-content:center;
+ background:var(--black);
+ color:var(--white);
+ font-family:monospace;
+}
+
+.game{
+ width:min(900px,100vw);
+ height:min(700px,100vh);
+ display:flex;
+ flex-direction:column;
+ position:relative;
+ background:#080808;
+}
+
+.topbar{
+ height:48px;
+ flex-shrink:0;
+ display:flex;
+ align-items:center;
+ justify-content:space-between;
+ padding:8px 12px;
+ border-bottom:2px solid var(--green2);
+}
+
+.title{
+ color:var(--green);
+ font-weight:bold;
+ letter-spacing:2px;
+}
+
+.score{
+ color:var(--blue);
+ font-weight:bold;
+}
+
+.back{
+ color:var(--green);
+ text-decoration:none;
+ border:1px solid var(--green2);
+ padding:5px 8px;
+ border-radius:4px;
+}
+
+canvas{
+ width:100%;
+ height:100%;
+ flex:1;
+ min-height:0;
+ display:block;
+ background:#020202;
+}
+
+.controls{
+ display:none;
+ justify-content:center;
+ gap:12px;
+ padding:8px;
+ border-top:2px solid var(--blue2);
+}
+
+.control{
+ width:110px;
+ height:45px;
+ background:#080808;
+ color:var(--blue);
+ border:2px solid var(--blue2);
+ border-radius:5px;
+ font: bold 22px monospace;
+}
+
+.control:active{
+ background:var(--blue);
+ color:#000;
+}
+
+.message{
+ display:none;
+ position:absolute;
+ z-index:5;
+ left:50%;
+ top:50%;
+ transform:translate(-50%,-50%);
+ width:min(330px,85%);
+ padding:24px;
+ text-align:center;
+ background:#050505;
+ border:2px solid var(--green);
+ box-shadow:0 0 25px #00ff6633;
+}
+
+.message h1{
+ margin:0 0 12px;
+ color:var(--green);
+}
+
+.message p{
+ color:var(--gray);
+}
+
+.message button{
+ padding:11px 20px;
+ background:transparent;
+ color:var(--blue);
+ border:2px solid var(--blue);
+ border-radius:5px;
+ font:bold 16px monospace;
+}
+
+.message button:active{
+ background:var(--blue);
+ color:#000;
+}
+
+@media(max-width:699px){
+ .controls{display:flex}
+ .game{height:100vh}
+}
+
+@media(max-height:500px){
+ .controls{display:none}
+ .topbar{height:40px;padding:5px 10px}
+}
+</style>
 </head>
 
 <body>
 
 <div class="game">
 
-    <div class="topbar">
+<header class="topbar">
+<a class="back" href="../../index.html">← Menú</a>
+<div class="title">PIXEL BREAKER</div>
+<div class="score">PUNTOS: <span id="score">0</span></div>
+</header>
 
-        <a
-            class="back"
-            href="../../index.html"
-        >
-            ← Menú
-        </a>
+<canvas id="game"></canvas>
 
-        <div class="title">
-            PIXEL BREAKER
-        </div>
+<div class="controls">
+<button class="control" id="left">◀</button>
+<button class="control" id="right">▶</button>
+</div>
 
-        <div class="score">
-            PUNTOS:
-            <span id="score">0</span>
-        </div>
-
-    </div>
-
-
-    <canvas id="gameCanvas"></canvas>
-
-
-    <div class="controls">
-
-        <button
-            class="control"
-            id="leftButton"
-        >
-            ◀
-        </button>
-
-        <button
-            class="control"
-            id="rightButton"
-        >
-            ▶
-        </button>
-
-    </div>
-
-
-    <div
-        class="message"
-        id="message"
-    >
-
-        <h1 id="messageTitle">
-            PIXEL BREAKER
-        </h1>
-
-        <p id="messageText">
-            Rompe todos los bloques.
-        </p>
-
-        <p>
-            Puntuación:
-            <strong id="finalScore">0</strong>
-        </p>
-
-        <button id="restart">
-            JUGAR
-        </button>
-
-    </div>
+<div class="message" id="message">
+<h1 id="messageTitle">GAME OVER</h1>
+<p id="messageText"></p>
+<p>Puntuación: <b id="finalScore">0</b></p>
+<button id="restart">JUGAR</button>
+</div>
 
 </div>
 
-
 <script>
+const canvas=document.getElementById("game");
+const ctx=canvas.getContext("2d");
 
-const canvas =
-    document.getElementById("gameCanvas");
+const scoreEl=document.getElementById("score");
+const message=document.getElementById("message");
+const title=document.getElementById("messageTitle");
+const text=document.getElementById("messageText");
+const finalScore=document.getElementById("finalScore");
+const restart=document.getElementById("restart");
 
-const ctx =
-    canvas.getContext("2d");
-
-
-const scoreElement =
-    document.getElementById("score");
-
-const message =
-    document.getElementById("message");
-
-const messageTitle =
-    document.getElementById("messageTitle");
-
-const messageText =
-    document.getElementById("messageText");
-
-const finalScore =
-    document.getElementById("finalScore");
-
-const restartButton =
-    document.getElementById("restart");
-
-const leftButton =
-    document.getElementById("leftButton");
-
-const rightButton =
-    document.getElementById("rightButton");
+let W,H,dpr;
+let paddle,ball,bricks;
+let score,lives,running;
+let keys={};
+let raf;
 
 
-let width = 0;
-let height = 0;
+/* Tamaño del canvas */
 
+function resize(){
+ const r=canvas.getBoundingClientRect();
+ dpr=Math.min(devicePixelRatio||1,2);
+ W=r.width;
+ H=r.height;
 
-/*
- * Jugador.
- */
+ canvas.width=W*dpr;
+ canvas.height=H*dpr;
 
-let paddle;
+ ctx.setTransform(dpr,0,0,dpr,0,0);
 
-
-/*
- * Pelota.
- */
-
-let ball;
-
-
-/*
- * Bloques.
- */
-
-let bricks = [];
-
-
-/*
- * Estado.
- */
-
-let score = 0;
-let lives = 3;
-
-let running = false;
-
-let animationFrame;
-
-
-/*
- * Teclado.
- */
-
-const keys = {};
-
-
-/*
- * Configuración de bloques.
- */
-
-const brickRows = 5;
-const brickColumns = 9;
-
-const brickGap = 5;
-
-
-/*
- * Redimensionar canvas.
- */
-
-function resizeCanvas() {
-
-    const rect =
-        canvas.getBoundingClientRect();
-
-    const dpr =
-        Math.min(
-            window.devicePixelRatio || 1,
-            2
-        );
-
-    width = rect.width;
-    height = rect.height;
-
-    canvas.width =
-        width * dpr;
-
-    canvas.height =
-        height * dpr;
-
-    ctx.setTransform(
-        dpr,
-        0,
-        0,
-        dpr,
-        0,
-        0
-    );
-
-
-    /*
-     * Mantener al jugador dentro
-     * de la nueva pantalla.
-     */
-
-    if (paddle) {
-
-        paddle.x =
-            Math.min(
-                paddle.x,
-                width - paddle.width
-            );
-
-    }
-
+ if(paddle)
+   paddle.x=Math.max(0,Math.min(W-paddle.w,paddle.x));
 }
 
 
-/*
- * Crear jugador.
- */
+/* Jugador */
 
-function createPaddle() {
-
-    return {
-
-        width: 100,
-
-        height: 12,
-
-        x:
-            width / 2 - 50,
-
-        y:
-            height - 35,
-
-        speed: 7
-
-    };
-
+function newPaddle(){
+ return{
+   w:Math.min(110,W*.28),
+   h:11,
+   x:W/2-Math.min(110,W*.28)/2,
+   y:H-28,
+   speed:7
+ };
 }
 
 
-/*
- * Crear pelota.
+/* Pelota */
 
- * La velocidad inicial aumenta
- * ligeramente según el tamaño.
- */
-
-function createBall() {
-
-    const speed = 4.5;
-
-    return {
-
-        size: 9,
-
-        x:
-            width / 2,
-
-        y:
-            height - 60,
-
-        dx:
-            Math.random() > 0.5
-                ? speed
-                : -speed,
-
-        dy:
-            -speed
-
-    };
-
+function newBall(){
+ return{
+   x:W/2,
+   y:H-55,
+   r:7,
+   dx:(Math.random()<.5?-1:1)*4,
+   dy:-4
+ };
 }
 
 
-/*
- * Crear bloques.
- */
+/* Bloques */
 
-function createBricks() {
+function makeBricks(){
+ bricks=[];
 
-    bricks = [];
+ const cols=9;
+ const rows=5;
+ const gap=5;
+ const pad=12;
+ const bw=(W-pad*2-gap*(cols-1))/cols;
 
-
-    const horizontalPadding = 15;
-
-    const totalGap =
-        brickGap *
-        (brickColumns - 1);
-
-    const brickWidth =
-        (
-            width -
-            horizontalPadding * 2 -
-            totalGap
-        ) /
-        brickColumns;
-
-
-    const brickHeight = 20;
-
-    const startY = 25;
-
-
-    for (
-        let row = 0;
-        row < brickRows;
-        row++
-    ) {
-
-        for (
-            let column = 0;
-            column < brickColumns;
-            column++
-        ) {
-
-            bricks.push({
-
-                x:
-                    horizontalPadding +
-                    column *
-                    (brickWidth + brickGap),
-
-                y:
-                    startY +
-                    row *
-                    (brickHeight + brickGap),
-
-                width:
-                    brickWidth,
-
-                height:
-                    brickHeight,
-
-                alive: true,
-
-                /*
-                 * Alternamos los detalles
-                 * verdes y azules.
-                 */
-
-                type:
-                    row % 2 === 0
-                        ? "green"
-                        : "blue"
-
-            });
-
-        }
-
-    }
-
+ for(let y=0;y<rows;y++)
+  for(let x=0;x<cols;x++)
+   bricks.push({
+    x:pad+x*(bw+gap),
+    y:20+y*25,
+    w:bw,
+    h:20,
+    alive:true,
+    color:y%2?"blue":"green"
+   });
 }
 
 
-/*
- * Iniciar partida.
- */
+/* Nueva partida */
 
-function startGame() {
+function start(){
+ cancelAnimationFrame(raf);
 
-    cancelAnimationFrame(
-        animationFrame
-    );
+ score=0;
+ lives=3;
+ running=true;
 
+ scoreEl.textContent=0;
 
-    score = 0;
+ paddle=newPaddle();
+ ball=newBall();
+ makeBricks();
 
-    lives = 3;
+ message.style.display="none";
 
-    running = true;
-
-
-    scoreElement.textContent =
-        score;
-
-
-    paddle =
-        createPaddle();
-
-
-    ball =
-        createBall();
-
-
-    createBricks();
-
-
-    message.style.display =
-        "none";
-
-
-    gameLoop();
-
+ loop();
 }
 
 
-/*
- * Mover jugador.
- */
+/* Movimiento */
 
-function updatePaddle() {
+function move(){
+ if(keys.left) paddle.x-=paddle.speed;
+ if(keys.right) paddle.x+=paddle.speed;
 
-    if (
-        keys["ArrowLeft"] ||
-        keys["a"] ||
-        keys["A"]
-    ) {
-
-        paddle.x -=
-            paddle.speed;
-
-    }
-
-
-    if (
-        keys["ArrowRight"] ||
-        keys["d"] ||
-        keys["D"]
-    ) {
-
-        paddle.x +=
-            paddle.speed;
-
-    }
-
-
-    /*
-     * Mantener dentro de pantalla.
-     */
-
-    paddle.x =
-        Math.max(
-            0,
-            Math.min(
-                width -
-                paddle.width,
-                paddle.x
-            )
-        );
-
+ paddle.x=Math.max(
+  0,
+  Math.min(W-paddle.w,paddle.x)
+ );
 }
 
 
-/*
- * Colisión de rectángulos.
+/* Colisión */
 
- */
-
-function rectangleCollision(
-    a,
-    b
-) {
-
-    return (
-
-        a.x <
-        b.x + b.width &&
-
-        a.x + a.width >
-        b.x &&
-
-        a.y <
-        b.y + b.height &&
-
-        a.y + a.height >
-        b.y
-
-    );
-
+function hit(a,b){
+ return a.x<b.x+b.w &&
+        a.x+a.w>b.x &&
+        a.y<b.y+b.h &&
+        a.y+a.h>b.y;
 }
 
 
-/*
- * Actualizar pelota.
- */
+/* Física */
 
-function updateBall() {
+function update(){
 
-    /*
-     * Movimiento.
-     */
+ move();
 
-    ball.x +=
-        ball.dx;
+ ball.x+=ball.dx;
+ ball.y+=ball.dy;
 
-    ball.y +=
-        ball.dy;
+ if(ball.x-ball.r<0){
+  ball.x=ball.r;
+  ball.dx=Math.abs(ball.dx);
+ }
 
+ if(ball.x+ball.r>W){
+  ball.x=W-ball.r;
+  ball.dx=-Math.abs(ball.dx);
+ }
 
-    /*
-     * Pared izquierda.
-     */
+ if(ball.y-ball.r<0){
+  ball.y=ball.r;
+  ball.dy=Math.abs(ball.dy);
+ }
 
-    if (
-        ball.x -
-        ball.size <
-        0
-    ) {
+ const box={
+  x:ball.x-ball.r,
+  y:ball.y-ball.r,
+  w:ball.r*2,
+  h:ball.r*2
+ };
 
-        ball.x =
-            ball.size;
+ /* Pala */
 
-        ball.dx =
-            Math.abs(
-                ball.dx
-            );
+ if(ball.dy>0&&hit(box,paddle)){
+  const pos=(ball.x-(paddle.x+paddle.w/2))/(paddle.w/2);
+  ball.dx=pos*6;
+  ball.dy=-Math.abs(ball.dy);
+  ball.y=paddle.y-ball.r;
+ }
 
-    }
+ /* Bloques */
 
+ for(const b of bricks){
+  if(!b.alive||!hit(box,b)) continue;
 
-    /*
-     * Pared derecha.
-     */
+  b.alive=false;
+  score+=10;
+  scoreEl.textContent=score;
 
-    if (
-        ball.x +
-        ball.size >
-        width
-    ) {
+  ball.dy*=-1;
 
-        ball.x =
-            width -
-            ball.size;
+  if(bricks.every(x=>!x.alive)){
+   finish(true);
+  }
 
-        ball.dx =
-            -Math.abs(
-                ball.dx
-            );
+  break;
+ }
 
-    }
+ /* Perder pelota */
 
+ if(ball.y-ball.r>H){
+  lives--;
 
-    /*
-     * Pared superior.
-     */
-
-    if (
-        ball.y -
-        ball.size <
-        0
-    ) {
-
-        ball.y =
-            ball.size;
-
-        ball.dy =
-            Math.abs(
-                ball.dy
-            );
-
-    }
-
-
-    /*
-     * Colisión con pala.
-     */
-
-    const ballBox = {
-
-        x:
-            ball.x -
-            ball.size,
-
-        y:
-            ball.y -
-            ball.size,
-
-        width:
-            ball.size * 2,
-
-        height:
-            ball.size * 2
-
-    };
-
-
-    if (
-        ball.dy > 0 &&
-        rectangleCollision(
-            ballBox,
-            paddle
-        )
-    ) {
-
-        /*
-         * Posición relativa
-         * del golpe sobre la pala.
-         */
-
-        const paddleCenter =
-            paddle.x +
-            paddle.width / 2;
-
-
-        const hitPosition =
-            (
-                ball.x -
-                paddleCenter
-            ) /
-            (paddle.width / 2);
-
-
-        /*
-         * Cambiar dirección horizontal.
-         */
-
-        ball.dx =
-            hitPosition * 6;
-
-
-        ball.dy =
-            -Math.abs(
-                ball.dy
-            );
-
-
-        /*
-         * Evitar que la pelota
-         * se quede dentro de la pala.
-         */
-
-        ball.y =
-            paddle.y -
-            ball.size;
-
-    }
-
-
-    /*
-     * Bloques.
-     */
-
-    for (
-        const brick of bricks
-    ) {
-
-        if (!brick.alive) {
-            continue;
-        }
-
-
-        const brickBox = {
-
-            x:
-                brick.x,
-
-            y:
-                brick.y,
-
-            width:
-                brick.width,
-
-            height:
-                brick.height
-
-        };
-
-
-        if (
-            rectangleCollision(
-                ballBox,
-                brickBox
-            )
-        ) {
-
-            brick.alive =
-                false;
-
-
-            score += 10;
-
-
-            scoreElement.textContent =
-                score;
-
-
-            /*
-             * Rebote vertical.
-             */
-
-            ball.dy *= -1;
-
-
-            /*
-             * Aumentar ligeramente
-             * la dificultad.
-             */
-
-            const maxSpeed = 8;
-
-            ball.dx =
-                Math.max(
-                    -maxSpeed,
-                    Math.min(
-                        maxSpeed,
-                        ball.dx * 1.01
-                    )
-                );
-
-
-            /*
-             * Comprobar victoria.
-             */
-
-            if (
-                bricks.every(
-                    brick =>
-                        !brick.alive
-                )
-            ) {
-
-                winGame();
-
-            }
-
-
-            break;
-
-        }
-
-    }
-
-
-    /*
-     * Pelota fuera de pantalla.
-     */
-
-    if (
-        ball.y -
-        ball.size >
-        height
-    ) {
-
-        loseLife();
-
-    }
-
+  if(lives<=0){
+   finish(false);
+  }else{
+   ball=newBall();
+  }
+ }
 }
 
 
-/*
- * Perder una vida.
- */
+/* Final */
 
-function loseLife() {
+function finish(win){
+ running=false;
 
-    lives--;
+ title.textContent=win?"¡VICTORIA!":"GAME OVER";
 
+ text.textContent=win
+  ?"Has destruido todos los bloques."
+  :"Te has quedado sin vidas.";
 
-    if (lives <= 0) {
+ finalScore.textContent=score;
+ restart.textContent=win?"JUGAR DE NUEVO":"REINTENTAR";
 
-        endGame();
-
-        return;
-
-    }
-
-
-    /*
-     * Reiniciar pelota.
-     */
-
-    ball =
-        createBall();
-
+ message.style.display="block";
 }
 
 
-/*
- * Ganar.
+/* Dibujado */
 
- */
+function draw(){
 
-function winGame() {
+ ctx.fillStyle="#020202";
+ ctx.fillRect(0,0,W,H);
 
-    running = false;
+ /* Cuadrícula */
 
+ ctx.strokeStyle="rgba(0,255,102,.045)";
+ ctx.lineWidth=1;
 
-    messageTitle.textContent =
-        "¡VICTORIA!";
+ for(let x=0;x<W;x+=32){
+  ctx.beginPath();
+  ctx.moveTo(x,0);
+  ctx.lineTo(x,H);
+  ctx.stroke();
+ }
 
+ for(let y=0;y<H;y+=32){
+  ctx.beginPath();
+  ctx.moveTo(0,y);
+  ctx.lineTo(W,y);
+  ctx.stroke();
+ }
 
-    messageText.textContent =
-        "Has destruido todos los bloques.";
+ /* Bloques */
 
+ for(const b of bricks){
+  if(!b.alive)continue;
 
-    finalScore.textContent =
-        score;
+  ctx.fillStyle=b.color==="green"
+   ?" #00ff66".trim()
+   :"#008cff";
 
+  ctx.fillRect(b.x,b.y,b.w,b.h);
 
-    restartButton.textContent =
-        "JUGAR DE NUEVO";
+  ctx.fillStyle="#050505";
+  ctx.fillRect(b.x+4,b.y+4,b.w-8,3);
+ }
 
+ /* Pala */
 
-    message.style.display =
-        "block";
+ ctx.fillStyle="#00ff66";
+ ctx.fillRect(
+  paddle.x,
+  paddle.y,
+  paddle.w,
+  paddle.h
+ );
 
+ ctx.fillStyle="#008cff";
+ ctx.fillRect(
+  paddle.x+8,
+  paddle.y+3,
+  paddle.w-16,
+  3
+ );
+
+ /* Pelota */
+
+ ctx.fillStyle="#ffffff";
+ ctx.fillRect(
+  ball.x-ball.r,
+  ball.y-ball.r,
+  ball.r*2,
+  ball.r*2
+ );
+
+ /* Vidas */
+
+ ctx.fillStyle="#789184";
+ ctx.font="14px monospace";
+ ctx.textAlign="left";
+ ctx.fillText("VIDAS: "+lives,12,H-10);
 }
 
 
-/*
- * Game Over.
- */
+/* Bucle */
 
-function endGame() {
+function loop(){
+ draw();
 
-    running = false;
+ if(!running)return;
 
+ update();
 
-    messageTitle.textContent =
-        "GAME OVER";
-
-
-    messageText.textContent =
-        "Te has quedado sin vidas.";
-
-
-    finalScore.textContent =
-        score;
-
-
-    restartButton.textContent =
-        "REINTENTAR";
-
-
-    message.style.display =
-        "block";
-
+ raf=requestAnimationFrame(loop);
 }
 
 
-/*
- * Dibujar fondo.
+/* Teclado */
 
- */
+addEventListener("keydown",e=>{
+ if(e.key==="ArrowLeft"||e.key.toLowerCase()==="a"){
+  keys.left=true;
+  e.preventDefault();
+ }
 
-function drawBackground() {
+ if(e.key==="ArrowRight"||e.key.toLowerCase()==="d"){
+  keys.right=true;
+  e.preventDefault();
+ }
+});
 
-    ctx.fillStyle =
-        "#020202";
+addEventListener("keyup",e=>{
+ if(e.key==="ArrowLeft"||e.key.toLowerCase()==="a")
+  keys.left=false;
 
-
-    ctx.fillRect(
-        0,
-        0,
-        width,
-        height
-    );
-
-
-    /*
-     * Cuadrícula.
-
-     */
-
-    ctx.strokeStyle =
-        "rgba(0, 255, 102, 0.05)";
-
-    ctx.lineWidth = 1;
+ if(e.key==="ArrowRight"||e.key.toLowerCase()==="d")
+  keys.right=false;
+});
 
 
-    const grid = 32;
+/* Botones */
 
+function buttonControl(el,key){
 
-    for (
-        let x = 0;
-        x < width;
-        x += grid
-    ) {
+ const on=e=>{
+  e.preventDefault();
+  keys[key]=true;
+ };
 
-        ctx.beginPath();
+ const off=e=>{
+  e.preventDefault();
+  keys[key]=false;
+ };
 
-        ctx.moveTo(
-            x,
-            0
-        );
-
-        ctx.lineTo(
-            x,
-            height
-        );
-
-        ctx.stroke();
-
-    }
-
-
-    for (
-        let y = 0;
-        y < height;
-        y += grid
-    ) {
-
-        ctx.beginPath();
-
-        ctx.moveTo(
-            0,
-            y
-        );
-
-        ctx.lineTo(
-            width,
-            y
-        );
-
-        ctx.stroke();
-
-    }
-
+ el.addEventListener("pointerdown",on);
+ el.addEventListener("pointerup",off);
+ el.addEventListener("pointercancel",off);
+ el.addEventListener("pointerleave",off);
 }
 
-
-/*
- * Dibujar bloques.
-
- */
-
-function drawBricks() {
-
-    for (
-        const brick of bricks
-    ) {
-
-        if (!brick.alive) {
-            continue;
-        }
-
-
-        /*
-         * Color según fila.
-
-         */
-
-        if (
-            brick.type ===
-            "green"
-        ) {
-
-            ctx.fillStyle =
-                "#00ff66";
-
-        } else {
-
-            ctx.fillStyle =
-                "#008cff";
-
-        }
-
-
-        ctx.fillRect(
-            brick.x,
-            brick.y,
-            brick.width,
-            brick.height
-        );
-
-
-        /*
-         * Detalle negro para
-         * aspecto pixel art.
-
-         */
-
-        ctx.fillStyle =
-            "#050505";
-
-
-        ctx.fillRect(
-            brick.x + 4,
-            brick.y + 4,
-            brick.width - 8,
-            3
-        );
-
-    }
-
-}
-
-
-/*
- * Dibujar pala.
-
- */
-
-function drawPaddle() {
-
-    ctx.fillStyle =
-        "#00ff66";
-
-
-    ctx.fillRect(
-        paddle.x,
-        paddle.y,
-        paddle.width,
-        paddle.height
-    );
-
-
-    /*
-     * Detalle azul.
-
-     */
-
-    ctx.fillStyle =
-        "#008cff";
-
-
-    ctx.fillRect(
-        paddle.x + 8,
-        paddle.y + 3,
-        paddle.width - 16,
-        3
-    );
-
-}
-
-
-/*
- * Dibujar pelota.
-
- */
-
-function drawBall() {
-
-    ctx.fillStyle =
-        "#ffffff";
-
-
-    ctx.fillRect(
-        ball.x -
-        ball.size,
-
-        ball.y -
-        ball.size,
-
-        ball.size * 2,
-
-        ball.size * 2
-    );
-
-}
-
-
-/*
- * Dibujar todo.
-
- */
-
-function draw() {
-
-    drawBackground();
-
-    drawBricks();
-
-    drawPaddle();
-
-    drawBall();
-
-
-    /*
-     * Mostrar vidas.
-
-     */
-
-    ctx.fillStyle =
-        "#789184";
-
-
-    ctx.font =
-        "14px monospace";
-
-
-    ctx.textAlign =
-        "left";
-
-
-    ctx.fillText(
-        "VIDAS: " +
-        lives,
-        15,
-        height - 12
-    );
-
-}
-
-
-/*
- * Bucle principal.
-
- */
-
-function gameLoop() {
-
-    if (!running) {
-
-        draw();
-
-        return;
-
-    }
-
-
-    updatePaddle();
-
-    updateBall();
-
-    draw();
-
-
-    animationFrame =
-        requestAnimationFrame(
-            gameLoop
-        );
-
-}
-
-
-/*
- * Teclado.
-
- */
-
-window.addEventListener(
-    "keydown",
-    event => {
-
-        keys[event.key] =
-            true;
-
-
-        if (
-            [
-                "ArrowLeft",
-                "ArrowRight"
-            ].includes(
-                event.key
-            )
-        ) {
-
-            event.preventDefault();
-
-        }
-
-    }
+buttonControl(
+ document.getElementById("left"),
+ "left"
+);
+
+buttonControl(
+ document.getElementById("right"),
+ "right"
 );
 
 
-window.addEventListener(
-    "keyup",
-    event => {
+/* Arrastrar en móvil */
 
-        keys[event.key] =
-            false;
+canvas.addEventListener("pointermove",e=>{
+ if(e.pointerType==="touch"){
+  const r=canvas.getBoundingClientRect();
+  const x=e.clientX-r.left;
 
-    }
-);
+  paddle.x=x-paddle.w/2;
 
-
-/*
- * Controles táctiles.
-
- */
-
-function setupTouchButton(
-    button,
-    key
-) {
-
-    const press = event => {
-
-        event.preventDefault();
-
-        keys[key] =
-            true;
-
-    };
+  paddle.x=Math.max(
+   0,
+   Math.min(W-paddle.w,paddle.x)
+  );
+ }
+});
 
 
-    const release = event => {
+/* Reiniciar */
 
-        event.preventDefault();
-
-        keys[key] =
-            false;
-
-    };
+restart.addEventListener("click",start);
 
 
-    button.addEventListener(
-        "touchstart",
-        press,
-        {
-            passive: false
-        }
-    );
+/* Redimensionar */
+
+addEventListener("resize",resize);
 
 
-    button.addEventListener(
-        "touchend",
-        release,
-        {
-            passive: false
-        }
-    );
+/* Arrancar */
 
+resize();
+start();
 
-    button.addEventListener(
-        "touchcancel",
-        release,
-        {
-            passive: false
-        }
-    );
+</script>
 
-
-    /*
-     * Ratón.
-
-     */
-
-    button.addEventListener(
-        "mousedown",
-        press
-    );
-
-
-    button.addEventListener(
-        "mouseup",
-        release
-    
+</body>
+</html>
