@@ -2,5 +2,5 @@ games:
 
   - id: test-game
     name: Retro Dodge
-    url: Games/test-game/index.html
+    url: Games/retro-dodge/index.html
     description: "Recoge las monedas y evita a los enemigos."
