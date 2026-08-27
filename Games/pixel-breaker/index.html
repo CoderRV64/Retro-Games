@@ -1,0 +1,1536 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+    >
+
+    <meta name="theme-color" content="#050505">
+
+    <title>Pixel Breaker</title>
+
+    <style>
+
+        :root {
+            --black: #050505;
+            --black-soft: #0a0a0a;
+            --green: #00ff66;
+            --green-dark: #008f3d;
+            --blue: #008cff;
+            --blue-dark: #00529b;
+            --white: #eafff2;
+            --gray: #789184;
+        }
+
+        * {
+            box-sizing: border-box;
+            touch-action: none;
+        }
+
+        html,
+        body {
+            margin: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+            background: var(--black);
+            color: var(--white);
+
+            font-family: monospace;
+        }
+
+        /*
+         * Fondo retro
+         */
+
+        body::before {
+            content: "";
+
+            position: fixed;
+            inset: 0;
+
+            pointer-events: none;
+
+            background-image:
+                linear-gradient(
+                    rgba(0, 255, 102, 0.025) 1px,
+                    transparent 1px
+                ),
+                linear-gradient(
+                    90deg,
+                    rgba(0, 140, 255, 0.025) 1px,
+                    transparent 1px
+                );
+
+            background-size: 32px 32px;
+        }
+
+        /*
+         * Contenedor
+         */
+
+        .game {
+            position: relative;
+
+            width: min(900px, 100vw);
+            height: min(700px, 100vh);
+
+            display: flex;
+            flex-direction: column;
+
+            background: var(--black-soft);
+        }
+
+        /*
+         * Barra superior
+         */
+
+        .topbar {
+            display: flex;
+
+            align-items: center;
+            justify-content: space-between;
+
+            gap: 10px;
+
+            padding: 10px;
+
+            background: #080808;
+
+            border-bottom: 2px solid var(--green-dark);
+
+            z-index: 2;
+        }
+
+        .title {
+            color: var(--green);
+
+            font-weight: 900;
+
+            letter-spacing: 1px;
+        }
+
+        .score {
+            color: var(--blue);
+
+            font-weight: 900;
+        }
+
+        .back {
+            padding: 6px 10px;
+
+            color: var(--green);
+
+            text-decoration: none;
+
+            border: 1px solid var(--green-dark);
+            border-radius: 4px;
+        }
+
+        .back:hover {
+            border-color: var(--green);
+        }
+
+        /*
+         * Canvas
+         */
+
+        canvas {
+            display: block;
+
+            width: 100%;
+            height: 100%;
+
+            flex: 1;
+            min-height: 0;
+
+            background: #020202;
+
+            image-rendering: pixelated;
+            image-rendering: crisp-edges;
+        }
+
+        /*
+         * Controles móviles
+         */
+
+        .controls {
+            display: flex;
+
+            justify-content: center;
+
+            gap: 12px;
+
+            padding: 10px;
+
+            background: #080808;
+
+            border-top: 2px solid var(--blue-dark);
+
+            z-index: 2;
+        }
+
+        .control {
+            width: 100px;
+            height: 52px;
+
+            background: #0a0a0a;
+
+            color: var(--blue);
+
+            border: 2px solid var(--blue-dark);
+            border-radius: 6px;
+
+            font-family: monospace;
+            font-size: 1.4rem;
+            font-weight: bold;
+
+            user-select: none;
+        }
+
+        .control:active {
+            background: var(--blue);
+            color: #000;
+        }
+
+        /*
+         * Pantalla de Game Over / inicio
+         */
+
+        .message {
+            position: absolute;
+
+            left: 50%;
+            top: 50%;
+
+            transform: translate(-50%, -50%);
+
+            width: min(330px, 85%);
+
+            padding: 25px;
+
+            display: none;
+
+            text-align: center;
+
+            background: #050505;
+
+            border: 2px solid var(--green);
+
+            box-shadow:
+                0 0 25px rgba(0, 255, 102, 0.15);
+
+            z-index: 5;
+        }
+
+        .message h1 {
+            margin: 0 0 12px;
+
+            color: var(--green);
+
+            font-size: 1.8rem;
+
+            letter-spacing: 2px;
+        }
+
+        .message p {
+            color: var(--gray);
+
+            line-height: 1.5;
+        }
+
+        .message button {
+            margin-top: 10px;
+
+            padding: 12px 20px;
+
+            background: transparent;
+
+            border: 2px solid var(--blue);
+
+            border-radius: 5px;
+
+            color: var(--blue);
+
+            font-family: monospace;
+            font-weight: bold;
+
+            cursor: pointer;
+        }
+
+        .message button:hover {
+            background: var(--blue);
+
+            color: #000;
+        }
+
+        /*
+         * En ordenador ocultamos los controles táctiles.
+         */
+
+        @media (min-width: 700px) {
+
+            .controls {
+                display: none;
+            }
+
+        }
+
+        /*
+         * Pantallas pequeñas en horizontal.
+         */
+
+        @media (max-height: 500px) {
+
+            .controls {
+                display: none;
+            }
+
+            .topbar {
+                padding: 6px 10px;
+            }
+
+        }
+
+    </style>
+</head>
+
+<body>
+
+<div class="game">
+
+    <div class="topbar">
+
+        <a
+            class="back"
+            href="../../index.html"
+        >
+            ← Menú
+        </a>
+
+        <div class="title">
+            PIXEL BREAKER
+        </div>
+
+        <div class="score">
+            PUNTOS:
+            <span id="score">0</span>
+        </div>
+
+    </div>
+
+
+    <canvas id="gameCanvas"></canvas>
+
+
+    <div class="controls">
+
+        <button
+            class="control"
+            id="leftButton"
+        >
+            ◀
+        </button>
+
+        <button
+            class="control"
+            id="rightButton"
+        >
+            ▶
+        </button>
+
+    </div>
+
+
+    <div
+        class="message"
+        id="message"
+    >
+
+        <h1 id="messageTitle">
+            PIXEL BREAKER
+        </h1>
+
+        <p id="messageText">
+            Rompe todos los bloques.
+        </p>
+
+        <p>
+            Puntuación:
+            <strong id="finalScore">0</strong>
+        </p>
+
+        <button id="restart">
+            JUGAR
+        </button>
+
+    </div>
+
+</div>
+
+
+<script>
+
+const canvas =
+    document.getElementById("gameCanvas");
+
+const ctx =
+    canvas.getContext("2d");
+
+
+const scoreElement =
+    document.getElementById("score");
+
+const message =
+    document.getElementById("message");
+
+const messageTitle =
+    document.getElementById("messageTitle");
+
+const messageText =
+    document.getElementById("messageText");
+
+const finalScore =
+    document.getElementById("finalScore");
+
+const restartButton =
+    document.getElementById("restart");
+
+const leftButton =
+    document.getElementById("leftButton");
+
+const rightButton =
+    document.getElementById("rightButton");
+
+
+let width = 0;
+let height = 0;
+
+
+/*
+ * Jugador.
+ */
+
+let paddle;
+
+
+/*
+ * Pelota.
+ */
+
+let ball;
+
+
+/*
+ * Bloques.
+ */
+
+let bricks = [];
+
+
+/*
+ * Estado.
+ */
+
+let score = 0;
+let lives = 3;
+
+let running = false;
+
+let animationFrame;
+
+
+/*
+ * Teclado.
+ */
+
+const keys = {};
+
+
+/*
+ * Configuración de bloques.
+ */
+
+const brickRows = 5;
+const brickColumns = 9;
+
+const brickGap = 5;
+
+
+/*
+ * Redimensionar canvas.
+ */
+
+function resizeCanvas() {
+
+    const rect =
+        canvas.getBoundingClientRect();
+
+    const dpr =
+        Math.min(
+            window.devicePixelRatio || 1,
+            2
+        );
+
+    width = rect.width;
+    height = rect.height;
+
+    canvas.width =
+        width * dpr;
+
+    canvas.height =
+        height * dpr;
+
+    ctx.setTransform(
+        dpr,
+        0,
+        0,
+        dpr,
+        0,
+        0
+    );
+
+
+    /*
+     * Mantener al jugador dentro
+     * de la nueva pantalla.
+     */
+
+    if (paddle) {
+
+        paddle.x =
+            Math.min(
+                paddle.x,
+                width - paddle.width
+            );
+
+    }
+
+}
+
+
+/*
+ * Crear jugador.
+ */
+
+function createPaddle() {
+
+    return {
+
+        width: 100,
+
+        height: 12,
+
+        x:
+            width / 2 - 50,
+
+        y:
+            height - 35,
+
+        speed: 7
+
+    };
+
+}
+
+
+/*
+ * Crear pelota.
+
+ * La velocidad inicial aumenta
+ * ligeramente según el tamaño.
+ */
+
+function createBall() {
+
+    const speed = 4.5;
+
+    return {
+
+        size: 9,
+
+        x:
+            width / 2,
+
+        y:
+            height - 60,
+
+        dx:
+            Math.random() > 0.5
+                ? speed
+                : -speed,
+
+        dy:
+            -speed
+
+    };
+
+}
+
+
+/*
+ * Crear bloques.
+ */
+
+function createBricks() {
+
+    bricks = [];
+
+
+    const horizontalPadding = 15;
+
+    const totalGap =
+        brickGap *
+        (brickColumns - 1);
+
+    const brickWidth =
+        (
+            width -
+            horizontalPadding * 2 -
+            totalGap
+        ) /
+        brickColumns;
+
+
+    const brickHeight = 20;
+
+    const startY = 25;
+
+
+    for (
+        let row = 0;
+        row < brickRows;
+        row++
+    ) {
+
+        for (
+            let column = 0;
+            column < brickColumns;
+            column++
+        ) {
+
+            bricks.push({
+
+                x:
+                    horizontalPadding +
+                    column *
+                    (brickWidth + brickGap),
+
+                y:
+                    startY +
+                    row *
+                    (brickHeight + brickGap),
+
+                width:
+                    brickWidth,
+
+                height:
+                    brickHeight,
+
+                alive: true,
+
+                /*
+                 * Alternamos los detalles
+                 * verdes y azules.
+                 */
+
+                type:
+                    row % 2 === 0
+                        ? "green"
+                        : "blue"
+
+            });
+
+        }
+
+    }
+
+}
+
+
+/*
+ * Iniciar partida.
+ */
+
+function startGame() {
+
+    cancelAnimationFrame(
+        animationFrame
+    );
+
+
+    score = 0;
+
+    lives = 3;
+
+    running = true;
+
+
+    scoreElement.textContent =
+        score;
+
+
+    paddle =
+        createPaddle();
+
+
+    ball =
+        createBall();
+
+
+    createBricks();
+
+
+    message.style.display =
+        "none";
+
+
+    gameLoop();
+
+}
+
+
+/*
+ * Mover jugador.
+ */
+
+function updatePaddle() {
+
+    if (
+        keys["ArrowLeft"] ||
+        keys["a"] ||
+        keys["A"]
+    ) {
+
+        paddle.x -=
+            paddle.speed;
+
+    }
+
+
+    if (
+        keys["ArrowRight"] ||
+        keys["d"] ||
+        keys["D"]
+    ) {
+
+        paddle.x +=
+            paddle.speed;
+
+    }
+
+
+    /*
+     * Mantener dentro de pantalla.
+     */
+
+    paddle.x =
+        Math.max(
+            0,
+            Math.min(
+                width -
+                paddle.width,
+                paddle.x
+            )
+        );
+
+}
+
+
+/*
+ * Colisión de rectángulos.
+
+ */
+
+function rectangleCollision(
+    a,
+    b
+) {
+
+    return (
+
+        a.x <
+        b.x + b.width &&
+
+        a.x + a.width >
+        b.x &&
+
+        a.y <
+        b.y + b.height &&
+
+        a.y + a.height >
+        b.y
+
+    );
+
+}
+
+
+/*
+ * Actualizar pelota.
+ */
+
+function updateBall() {
+
+    /*
+     * Movimiento.
+     */
+
+    ball.x +=
+        ball.dx;
+
+    ball.y +=
+        ball.dy;
+
+
+    /*
+     * Pared izquierda.
+     */
+
+    if (
+        ball.x -
+        ball.size <
+        0
+    ) {
+
+        ball.x =
+            ball.size;
+
+        ball.dx =
+            Math.abs(
+                ball.dx
+            );
+
+    }
+
+
+    /*
+     * Pared derecha.
+     */
+
+    if (
+        ball.x +
+        ball.size >
+        width
+    ) {
+
+        ball.x =
+            width -
+            ball.size;
+
+        ball.dx =
+            -Math.abs(
+                ball.dx
+            );
+
+    }
+
+
+    /*
+     * Pared superior.
+     */
+
+    if (
+        ball.y -
+        ball.size <
+        0
+    ) {
+
+        ball.y =
+            ball.size;
+
+        ball.dy =
+            Math.abs(
+                ball.dy
+            );
+
+    }
+
+
+    /*
+     * Colisión con pala.
+     */
+
+    const ballBox = {
+
+        x:
+            ball.x -
+            ball.size,
+
+        y:
+            ball.y -
+            ball.size,
+
+        width:
+            ball.size * 2,
+
+        height:
+            ball.size * 2
+
+    };
+
+
+    if (
+        ball.dy > 0 &&
+        rectangleCollision(
+            ballBox,
+            paddle
+        )
+    ) {
+
+        /*
+         * Posición relativa
+         * del golpe sobre la pala.
+         */
+
+        const paddleCenter =
+            paddle.x +
+            paddle.width / 2;
+
+
+        const hitPosition =
+            (
+                ball.x -
+                paddleCenter
+            ) /
+            (paddle.width / 2);
+
+
+        /*
+         * Cambiar dirección horizontal.
+         */
+
+        ball.dx =
+            hitPosition * 6;
+
+
+        ball.dy =
+            -Math.abs(
+                ball.dy
+            );
+
+
+        /*
+         * Evitar que la pelota
+         * se quede dentro de la pala.
+         */
+
+        ball.y =
+            paddle.y -
+            ball.size;
+
+    }
+
+
+    /*
+     * Bloques.
+     */
+
+    for (
+        const brick of bricks
+    ) {
+
+        if (!brick.alive) {
+            continue;
+        }
+
+
+        const brickBox = {
+
+            x:
+                brick.x,
+
+            y:
+                brick.y,
+
+            width:
+                brick.width,
+
+            height:
+                brick.height
+
+        };
+
+
+        if (
+            rectangleCollision(
+                ballBox,
+                brickBox
+            )
+        ) {
+
+            brick.alive =
+                false;
+
+
+            score += 10;
+
+
+            scoreElement.textContent =
+                score;
+
+
+            /*
+             * Rebote vertical.
+             */
+
+            ball.dy *= -1;
+
+
+            /*
+             * Aumentar ligeramente
+             * la dificultad.
+             */
+
+            const maxSpeed = 8;
+
+            ball.dx =
+                Math.max(
+                    -maxSpeed,
+                    Math.min(
+                        maxSpeed,
+                        ball.dx * 1.01
+                    )
+                );
+
+
+            /*
+             * Comprobar victoria.
+             */
+
+            if (
+                bricks.every(
+                    brick =>
+                        !brick.alive
+                )
+            ) {
+
+                winGame();
+
+            }
+
+
+            break;
+
+        }
+
+    }
+
+
+    /*
+     * Pelota fuera de pantalla.
+     */
+
+    if (
+        ball.y -
+        ball.size >
+        height
+    ) {
+
+        loseLife();
+
+    }
+
+}
+
+
+/*
+ * Perder una vida.
+ */
+
+function loseLife() {
+
+    lives--;
+
+
+    if (lives <= 0) {
+
+        endGame();
+
+        return;
+
+    }
+
+
+    /*
+     * Reiniciar pelota.
+     */
+
+    ball =
+        createBall();
+
+}
+
+
+/*
+ * Ganar.
+
+ */
+
+function winGame() {
+
+    running = false;
+
+
+    messageTitle.textContent =
+        "¡VICTORIA!";
+
+
+    messageText.textContent =
+        "Has destruido todos los bloques.";
+
+
+    finalScore.textContent =
+        score;
+
+
+    restartButton.textContent =
+        "JUGAR DE NUEVO";
+
+
+    message.style.display =
+        "block";
+
+}
+
+
+/*
+ * Game Over.
+ */
+
+function endGame() {
+
+    running = false;
+
+
+    messageTitle.textContent =
+        "GAME OVER";
+
+
+    messageText.textContent =
+        "Te has quedado sin vidas.";
+
+
+    finalScore.textContent =
+        score;
+
+
+    restartButton.textContent =
+        "REINTENTAR";
+
+
+    message.style.display =
+        "block";
+
+}
+
+
+/*
+ * Dibujar fondo.
+
+ */
+
+function drawBackground() {
+
+    ctx.fillStyle =
+        "#020202";
+
+
+    ctx.fillRect(
+        0,
+        0,
+        width,
+        height
+    );
+
+
+    /*
+     * Cuadrícula.
+
+     */
+
+    ctx.strokeStyle =
+        "rgba(0, 255, 102, 0.05)";
+
+    ctx.lineWidth = 1;
+
+
+    const grid = 32;
+
+
+    for (
+        let x = 0;
+        x < width;
+        x += grid
+    ) {
+
+        ctx.beginPath();
+
+        ctx.moveTo(
+            x,
+            0
+        );
+
+        ctx.lineTo(
+            x,
+            height
+        );
+
+        ctx.stroke();
+
+    }
+
+
+    for (
+        let y = 0;
+        y < height;
+        y += grid
+    ) {
+
+        ctx.beginPath();
+
+        ctx.moveTo(
+            0,
+            y
+        );
+
+        ctx.lineTo(
+            width,
+            y
+        );
+
+        ctx.stroke();
+
+    }
+
+}
+
+
+/*
+ * Dibujar bloques.
+
+ */
+
+function drawBricks() {
+
+    for (
+        const brick of bricks
+    ) {
+
+        if (!brick.alive) {
+            continue;
+        }
+
+
+        /*
+         * Color según fila.
+
+         */
+
+        if (
+            brick.type ===
+            "green"
+        ) {
+
+            ctx.fillStyle =
+                "#00ff66";
+
+        } else {
+
+            ctx.fillStyle =
+                "#008cff";
+
+        }
+
+
+        ctx.fillRect(
+            brick.x,
+            brick.y,
+            brick.width,
+            brick.height
+        );
+
+
+        /*
+         * Detalle negro para
+         * aspecto pixel art.
+
+         */
+
+        ctx.fillStyle =
+            "#050505";
+
+
+        ctx.fillRect(
+            brick.x + 4,
+            brick.y + 4,
+            brick.width - 8,
+            3
+        );
+
+    }
+
+}
+
+
+/*
+ * Dibujar pala.
+
+ */
+
+function drawPaddle() {
+
+    ctx.fillStyle =
+        "#00ff66";
+
+
+    ctx.fillRect(
+        paddle.x,
+        paddle.y,
+        paddle.width,
+        paddle.height
+    );
+
+
+    /*
+     * Detalle azul.
+
+     */
+
+    ctx.fillStyle =
+        "#008cff";
+
+
+    ctx.fillRect(
+        paddle.x + 8,
+        paddle.y + 3,
+        paddle.width - 16,
+        3
+    );
+
+}
+
+
+/*
+ * Dibujar pelota.
+
+ */
+
+function drawBall() {
+
+    ctx.fillStyle =
+        "#ffffff";
+
+
+    ctx.fillRect(
+        ball.x -
+        ball.size,
+
+        ball.y -
+        ball.size,
+
+        ball.size * 2,
+
+        ball.size * 2
+    );
+
+}
+
+
+/*
+ * Dibujar todo.
+
+ */
+
+function draw() {
+
+    drawBackground();
+
+    drawBricks();
+
+    drawPaddle();
+
+    drawBall();
+
+
+    /*
+     * Mostrar vidas.
+
+     */
+
+    ctx.fillStyle =
+        "#789184";
+
+
+    ctx.font =
+        "14px monospace";
+
+
+    ctx.textAlign =
+        "left";
+
+
+    ctx.fillText(
+        "VIDAS: " +
+        lives,
+        15,
+        height - 12
+    );
+
+}
+
+
+/*
+ * Bucle principal.
+
+ */
+
+function gameLoop() {
+
+    if (!running) {
+
+        draw();
+
+        return;
+
+    }
+
+
+    updatePaddle();
+
+    updateBall();
+
+    draw();
+
+
+    animationFrame =
+        requestAnimationFrame(
+            gameLoop
+        );
+
+}
+
+
+/*
+ * Teclado.
+
+ */
+
+window.addEventListener(
+    "keydown",
+    event => {
+
+        keys[event.key] =
+            true;
+
+
+        if (
+            [
+                "ArrowLeft",
+                "ArrowRight"
+            ].includes(
+                event.key
+            )
+        ) {
+
+            event.preventDefault();
+
+        }
+
+    }
+);
+
+
+window.addEventListener(
+    "keyup",
+    event => {
+
+        keys[event.key] =
+            false;
+
+    }
+);
+
+
+/*
+ * Controles táctiles.
+
+ */
+
+function setupTouchButton(
+    button,
+    key
+) {
+
+    const press = event => {
+
+        event.preventDefault();
+
+        keys[key] =
+            true;
+
+    };
+
+
+    const release = event => {
+
+        event.preventDefault();
+
+        keys[key] =
+            false;
+
+    };
+
+
+    button.addEventListener(
+        "touchstart",
+        press,
+        {
+            passive: false
+        }
+    );
+
+
+    button.addEventListener(
+        "touchend",
+        release,
+        {
+            passive: false
+        }
+    );
+
+
+    button.addEventListener(
+        "touchcancel",
+        release,
+        {
+            passive: false
+        }
+    );
+
+
+    /*
+     * Ratón.
+
+     */
+
+    button.addEventListener(
+        "mousedown",
+        press
+    );
+
+
+    button.addEventListener(
+        "mouseup",
+        release
+    
