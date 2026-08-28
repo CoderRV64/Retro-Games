@@ -4,156 +4,149 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#050505">
-<title>Pixel Breaker</title>
+<title>PixelBreaker</title>
 
 <style>
 :root{
- --black:#050505;
- --green:#00ff66;
- --green2:#008f3d;
- --blue:#008cff;
- --blue2:#00529b;
- --white:#eafff2;
- --gray:#789184;
+--black:#050505;
+--green:#00ff66;
+--green2:#008f3d;
+--blue:#008cff;
+--blue2:#00529b;
+--white:#eafff2;
+--gray:#789184;
 }
 
 *{
- box-sizing:border-box;
- touch-action:none;
+box-sizing:border-box;
+touch-action:none;
 }
 
 html,body{
- margin:0;
- width:100%;
- height:100%;
- overflow:hidden;
+margin:0;
+width:100%;
+height:100%;
+overflow:hidden;
 }
 
 body{
- display:flex;
- align-items:center;
- justify-content:center;
- background:var(--black);
- color:var(--white);
- font-family:monospace;
+background:var(--black);
+color:var(--white);
+font-family:monospace;
 }
 
 .game{
- width:min(900px,100vw);
- height:min(700px,100vh);
- display:flex;
- flex-direction:column;
- position:relative;
- background:#080808;
+position:relative;
+width:min(900px,100vw);
+height:100vh;
+margin:auto;
+display:flex;
+flex-direction:column;
+background:#080808;
 }
 
 .topbar{
- height:48px;
- flex-shrink:0;
- display:flex;
- align-items:center;
- justify-content:space-between;
- padding:8px 12px;
- border-bottom:2px solid var(--green2);
+height:48px;
+flex-shrink:0;
+display:flex;
+align-items:center;
+justify-content:space-between;
+gap:8px;
+padding:8px 12px;
+border-bottom:2px solid var(--green2);
 }
 
 .title{
- color:var(--green);
- font-weight:bold;
- letter-spacing:2px;
+color:var(--green);
+font-weight:bold;
+letter-spacing:2px;
 }
 
 .score{
- color:var(--blue);
- font-weight:bold;
+color:var(--blue);
+font-weight:bold;
 }
 
 .back{
- color:var(--green);
- text-decoration:none;
- border:1px solid var(--green2);
- padding:5px 8px;
- border-radius:4px;
+color:var(--green);
+text-decoration:none;
+border:1px solid var(--green2);
+padding:5px 8px;
+border-radius:4px;
 }
 
 canvas{
- width:100%;
- height:100%;
- flex:1;
- min-height:0;
- display:block;
- background:#020202;
+display:block;
+width:100%;
+height:100%;
+flex:1;
+min-height:0;
+background:#020202;
 }
 
 .controls{
- display:none;
- justify-content:center;
- gap:12px;
- padding:8px;
- border-top:2px solid var(--blue2);
+display:none;
+justify-content:center;
+gap:12px;
+padding:8px;
+border-top:2px solid var(--blue2);
 }
 
 .control{
- width:110px;
- height:45px;
- background:#080808;
- color:var(--blue);
- border:2px solid var(--blue2);
- border-radius:5px;
- font: bold 22px monospace;
+width:110px;
+height:45px;
+background:#080808;
+color:var(--blue);
+border:2px solid var(--blue2);
+border-radius:5px;
+font:bold 22px monospace;
 }
 
 .control:active{
- background:var(--blue);
- color:#000;
+background:var(--blue);
+color:#000;
 }
 
 .message{
- display:none;
- position:absolute;
- z-index:5;
- left:50%;
- top:50%;
- transform:translate(-50%,-50%);
- width:min(330px,85%);
- padding:24px;
- text-align:center;
- background:#050505;
- border:2px solid var(--green);
- box-shadow:0 0 25px #00ff6633;
+display:none;
+position:absolute;
+z-index:5;
+left:50%;
+top:50%;
+transform:translate(-50%,-50%);
+width:min(330px,85%);
+padding:24px;
+text-align:center;
+background:#050505;
+border:2px solid var(--green);
+box-shadow:0 0 25px #00ff6633;
 }
 
 .message h1{
- margin:0 0 12px;
- color:var(--green);
+margin:0 0 12px;
+color:var(--green);
 }
 
 .message p{
- color:var(--gray);
+color:var(--gray);
 }
 
 .message button{
- padding:11px 20px;
- background:transparent;
- color:var(--blue);
- border:2px solid var(--blue);
- border-radius:5px;
- font:bold 16px monospace;
-}
-
-.message button:active{
- background:var(--blue);
- color:#000;
+padding:11px 20px;
+background:transparent;
+color:var(--blue);
+border:2px solid var(--blue);
+border-radius:5px;
+font:bold 16px monospace;
 }
 
 @media(max-width:699px){
- .controls{display:flex}
- .game{height:100vh}
+.controls{display:flex}
 }
 
 @media(max-height:500px){
- .controls{display:none}
- .topbar{height:40px;padding:5px 10px}
+.controls{display:none}
+.topbar{height:40px}
 }
 </style>
 </head>
@@ -162,11 +155,11 @@ canvas{
 
 <div class="game">
 
-<header class="topbar">
+<div class="topbar">
 <a class="back" href="../../index.html">← Menú</a>
 <div class="title">PIXEL BREAKER</div>
 <div class="score">PUNTOS: <span id="score">0</span></div>
-</header>
+</div>
 
 <canvas id="game"></canvas>
 
@@ -190,393 +183,490 @@ const ctx=canvas.getContext("2d");
 
 const scoreEl=document.getElementById("score");
 const message=document.getElementById("message");
-const title=document.getElementById("messageTitle");
-const text=document.getElementById("messageText");
+const messageTitle=document.getElementById("messageTitle");
+const messageText=document.getElementById("messageText");
 const finalScore=document.getElementById("finalScore");
 const restart=document.getElementById("restart");
 
-let W,H,dpr;
-let paddle,ball,bricks;
-let score,lives,running;
+let W=0,H=0,dpr=1;
+let paddle,ball,bricks=[];
+let score=0,lives=3;
+let running=false;
 let keys={};
-let raf;
+let raf=0;
 
 
-/* Tamaño del canvas */
+/* CANVAS */
 
 function resize(){
- const r=canvas.getBoundingClientRect();
- dpr=Math.min(devicePixelRatio||1,2);
- W=r.width;
- H=r.height;
+const r=canvas.getBoundingClientRect();
 
- canvas.width=W*dpr;
- canvas.height=H*dpr;
+W=r.width;
+H=r.height;
+dpr=Math.min(window.devicePixelRatio||1,2);
 
- ctx.setTransform(dpr,0,0,dpr,0,0);
+canvas.width=Math.max(1,Math.floor(W*dpr));
+canvas.height=Math.max(1,Math.floor(H*dpr));
 
- if(paddle)
-   paddle.x=Math.max(0,Math.min(W-paddle.w,paddle.x));
+ctx.setTransform(dpr,0,0,dpr,0,0);
+
+if(paddle){
+paddle.w=Math.min(110,W*.28);
+paddle.x=Math.max(0,Math.min(W-paddle.w,paddle.x));
+paddle.y=H-28;
+}
 }
 
 
-/* Jugador */
+/* JUGADOR */
 
 function newPaddle(){
- return{
-   w:Math.min(110,W*.28),
-   h:11,
-   x:W/2-Math.min(110,W*.28)/2,
-   y:H-28,
-   speed:7
- };
+const w=Math.min(110,W*.28);
+
+return{
+w:w,
+h:11,
+x:(W-w)/2,
+y:H-28,
+speed:7
+};
 }
 
 
-/* Pelota */
+/* PELOTA */
 
 function newBall(){
- return{
-   x:W/2,
-   y:H-55,
-   r:7,
-   dx:(Math.random()<.5?-1:1)*4,
-   dy:-4
- };
+return{
+x:W/2,
+y:H-55,
+r:7,
+dx:(Math.random()<.5?-4:4),
+dy:-4
+};
 }
 
 
-/* Bloques */
+/* BLOQUES */
 
 function makeBricks(){
- bricks=[];
 
- const cols=9;
- const rows=5;
- const gap=5;
- const pad=12;
- const bw=(W-pad*2-gap*(cols-1))/cols;
+bricks=[];
 
- for(let y=0;y<rows;y++)
-  for(let x=0;x<cols;x++)
-   bricks.push({
-    x:pad+x*(bw+gap),
-    y:20+y*25,
-    w:bw,
-    h:20,
-    alive:true,
-    color:y%2?"blue":"green"
-   });
+const cols=9;
+const rows=5;
+const gap=5;
+const pad=12;
+const bw=(W-pad*2-gap*(cols-1))/cols;
+
+for(let row=0;row<rows;row++){
+
+for(let col=0;col<cols;col++){
+
+bricks.push({
+x:pad+col*(bw+gap),
+y:20+row*25,
+w:bw,
+h:20,
+alive:true,
+color:row%2?"blue":"green"
+});
+
+}
+}
 }
 
 
-/* Nueva partida */
+/* PARTIDA */
 
 function start(){
- cancelAnimationFrame(raf);
 
- score=0;
- lives=3;
- running=true;
+cancelAnimationFrame(raf);
 
- scoreEl.textContent=0;
+score=0;
+lives=3;
+running=true;
 
- paddle=newPaddle();
- ball=newBall();
- makeBricks();
+scoreEl.textContent="0";
 
- message.style.display="none";
+paddle=newPaddle();
+ball=newBall();
+makeBricks();
 
- loop();
+message.style.display="none";
+
+loop();
 }
 
 
-/* Movimiento */
+/* MOVIMIENTO */
 
 function move(){
- if(keys.left) paddle.x-=paddle.speed;
- if(keys.right) paddle.x+=paddle.speed;
 
- paddle.x=Math.max(
-  0,
-  Math.min(W-paddle.w,paddle.x)
- );
+if(keys.left)paddle.x-=paddle.speed;
+if(keys.right)paddle.x+=paddle.speed;
+
+paddle.x=Math.max(
+0,
+Math.min(W-paddle.w,paddle.x)
+);
 }
 
 
-/* Colisión */
+/* COLISIÓN */
 
 function hit(a,b){
- return a.x<b.x+b.w &&
-        a.x+a.w>b.x &&
-        a.y<b.y+b.h &&
-        a.y+a.h>b.y;
+
+return(
+a.x<b.x+b.w&&
+a.x+a.w>b.x&&
+a.y<b.y+b.h&&
+a.y+a.h>b.y
+);
+
 }
 
 
-/* Física */
+/* ACTUALIZAR */
 
 function update(){
 
- move();
+move();
 
- ball.x+=ball.dx;
- ball.y+=ball.dy;
+ball.x+=ball.dx;
+ball.y+=ball.dy;
 
- if(ball.x-ball.r<0){
-  ball.x=ball.r;
-  ball.dx=Math.abs(ball.dx);
- }
 
- if(ball.x+ball.r>W){
-  ball.x=W-ball.r;
-  ball.dx=-Math.abs(ball.dx);
- }
+/* Paredes */
 
- if(ball.y-ball.r<0){
-  ball.y=ball.r;
-  ball.dy=Math.abs(ball.dy);
- }
+if(ball.x-ball.r<=0){
+ball.x=ball.r;
+ball.dx=Math.abs(ball.dx);
+}
 
- const box={
-  x:ball.x-ball.r,
-  y:ball.y-ball.r,
-  w:ball.r*2,
-  h:ball.r*2
- };
+if(ball.x+ball.r>=W){
+ball.x=W-ball.r;
+ball.dx=-Math.abs(ball.dx);
+}
 
- /* Pala */
-
- if(ball.dy>0&&hit(box,paddle)){
-  const pos=(ball.x-(paddle.x+paddle.w/2))/(paddle.w/2);
-  ball.dx=pos*6;
-  ball.dy=-Math.abs(ball.dy);
-  ball.y=paddle.y-ball.r;
- }
-
- /* Bloques */
-
- for(const b of bricks){
-  if(!b.alive||!hit(box,b)) continue;
-
-  b.alive=false;
-  score+=10;
-  scoreEl.textContent=score;
-
-  ball.dy*=-1;
-
-  if(bricks.every(x=>!x.alive)){
-   finish(true);
-  }
-
-  break;
- }
-
- /* Perder pelota */
-
- if(ball.y-ball.r>H){
-  lives--;
-
-  if(lives<=0){
-   finish(false);
-  }else{
-   ball=newBall();
-  }
- }
+if(ball.y-ball.r<=0){
+ball.y=ball.r;
+ball.dy=Math.abs(ball.dy);
 }
 
 
-/* Final */
+/* Caja pelota */
+
+const box={
+x:ball.x-ball.r,
+y:ball.y-ball.r,
+w:ball.r*2,
+h:ball.r*2
+};
+
+
+/* PALA */
+
+if(ball.dy>0&&hit(box,paddle)){
+
+const center=paddle.x+paddle.w/2;
+
+const pos=(ball.x-center)/(paddle.w/2);
+
+ball.dx=pos*6;
+ball.dy=-Math.abs(ball.dy);
+
+ball.y=paddle.y-ball.r;
+}
+
+
+/* BLOQUES */
+
+for(const b of bricks){
+
+if(!b.alive)continue;
+
+if(hit(box,b)){
+
+b.alive=false;
+
+score+=10;
+scoreEl.textContent=score;
+
+ball.dy*=-1;
+
+if(bricks.every(b=>!b.alive)){
+finish(true);
+}
+
+break;
+}
+}
+
+
+/* CAÍDA */
+
+if(ball.y-ball.r>H){
+
+lives--;
+
+if(lives<=0){
+
+finish(false);
+
+}else{
+
+ball=newBall();
+
+}
+}
+}
+
+
+/* FINAL */
 
 function finish(win){
- running=false;
 
- title.textContent=win?"¡VICTORIA!":"GAME OVER";
+running=false;
 
- text.textContent=win
-  ?"Has destruido todos los bloques."
-  :"Te has quedado sin vidas.";
+messageTitle.textContent=
+win?"¡VICTORIA!":"GAME OVER";
 
- finalScore.textContent=score;
- restart.textContent=win?"JUGAR DE NUEVO":"REINTENTAR";
+messageText.textContent=
+win
+?"Has destruido todos los bloques."
+:"Te has quedado sin vidas.";
 
- message.style.display="block";
+finalScore.textContent=score;
+
+restart.textContent=
+win?"JUGAR DE NUEVO":"REINTENTAR";
+
+message.style.display="block";
 }
 
 
-/* Dibujado */
+/* DIBUJAR */
 
 function draw(){
 
- ctx.fillStyle="#020202";
- ctx.fillRect(0,0,W,H);
+ctx.fillStyle="#020202";
+ctx.fillRect(0,0,W,H);
 
- /* Cuadrícula */
 
- ctx.strokeStyle="rgba(0,255,102,.045)";
- ctx.lineWidth=1;
+/* GRID */
 
- for(let x=0;x<W;x+=32){
-  ctx.beginPath();
-  ctx.moveTo(x,0);
-  ctx.lineTo(x,H);
-  ctx.stroke();
- }
+ctx.strokeStyle="rgba(0,255,102,.045)";
+ctx.lineWidth=1;
 
- for(let y=0;y<H;y+=32){
-  ctx.beginPath();
-  ctx.moveTo(0,y);
-  ctx.lineTo(W,y);
-  ctx.stroke();
- }
+for(let x=0;x<W;x+=32){
 
- /* Bloques */
+ctx.beginPath();
+ctx.moveTo(x,0);
+ctx.lineTo(x,H);
+ctx.stroke();
 
- for(const b of bricks){
-  if(!b.alive)continue;
+}
 
-  ctx.fillStyle=b.color==="green"
-   ?" #00ff66".trim()
-   :"#008cff";
+for(let y=0;y<H;y+=32){
 
-  ctx.fillRect(b.x,b.y,b.w,b.h);
+ctx.beginPath();
+ctx.moveTo(0,y);
+ctx.lineTo(W,y);
+ctx.stroke();
 
-  ctx.fillStyle="#050505";
-  ctx.fillRect(b.x+4,b.y+4,b.w-8,3);
- }
-
- /* Pala */
-
- ctx.fillStyle="#00ff66";
- ctx.fillRect(
-  paddle.x,
-  paddle.y,
-  paddle.w,
-  paddle.h
- );
-
- ctx.fillStyle="#008cff";
- ctx.fillRect(
-  paddle.x+8,
-  paddle.y+3,
-  paddle.w-16,
-  3
- );
-
- /* Pelota */
-
- ctx.fillStyle="#ffffff";
- ctx.fillRect(
-  ball.x-ball.r,
-  ball.y-ball.r,
-  ball.r*2,
-  ball.r*2
- );
-
- /* Vidas */
-
- ctx.fillStyle="#789184";
- ctx.font="14px monospace";
- ctx.textAlign="left";
- ctx.fillText("VIDAS: "+lives,12,H-10);
 }
 
 
-/* Bucle */
+/* BLOQUES */
+
+for(const b of bricks){
+
+if(!b.alive)continue;
+
+ctx.fillStyle=
+b.color==="green"
+?"#00ff66"
+:"#008cff";
+
+ctx.fillRect(
+b.x,
+b.y,
+b.w,
+b.h
+);
+
+ctx.fillStyle="#050505";
+
+ctx.fillRect(
+b.x+4,
+b.y+4,
+Math.max(1,b.w-8),
+3
+);
+}
+
+
+/* PALA */
+
+ctx.fillStyle="#00ff66";
+
+ctx.fillRect(
+paddle.x,
+paddle.y,
+paddle.w,
+paddle.h
+);
+
+ctx.fillStyle="#008cff";
+
+ctx.fillRect(
+paddle.x+8,
+paddle.y+3,
+Math.max(1,paddle.w-16),
+3
+);
+
+
+/* PELOTA */
+
+ctx.fillStyle="#ffffff";
+
+ctx.fillRect(
+ball.x-ball.r,
+ball.y-ball.r,
+ball.r*2,
+ball.r*2
+);
+
+
+/* VIDAS */
+
+ctx.fillStyle="#789184";
+ctx.font="14px monospace";
+ctx.textAlign="left";
+
+ctx.fillText(
+"VIDAS: "+lives,
+12,
+H-10
+);
+}
+
+
+/* LOOP */
 
 function loop(){
- draw();
 
- if(!running)return;
+update();
+draw();
 
- update();
+if(running){
 
- raf=requestAnimationFrame(loop);
+raf=requestAnimationFrame(loop);
+
+}
+
 }
 
 
-/* Teclado */
+/* TECLADO */
 
-addEventListener("keydown",e=>{
- if(e.key==="ArrowLeft"||e.key.toLowerCase()==="a"){
-  keys.left=true;
-  e.preventDefault();
- }
+window.addEventListener("keydown",e=>{
 
- if(e.key==="ArrowRight"||e.key.toLowerCase()==="d"){
-  keys.right=true;
-  e.preventDefault();
- }
-});
+const k=e.key.toLowerCase();
 
-addEventListener("keyup",e=>{
- if(e.key==="ArrowLeft"||e.key.toLowerCase()==="a")
-  keys.left=false;
-
- if(e.key==="ArrowRight"||e.key.toLowerCase()==="d")
-  keys.right=false;
-});
-
-
-/* Botones */
-
-function buttonControl(el,key){
-
- const on=e=>{
-  e.preventDefault();
-  keys[key]=true;
- };
-
- const off=e=>{
-  e.preventDefault();
-  keys[key]=false;
- };
-
- el.addEventListener("pointerdown",on);
- el.addEventListener("pointerup",off);
- el.addEventListener("pointercancel",off);
- el.addEventListener("pointerleave",off);
+if(k==="arrowleft"||k==="a"){
+keys.left=true;
+e.preventDefault();
 }
 
-buttonControl(
- document.getElementById("left"),
- "left"
+if(k==="arrowright"||k==="d"){
+keys.right=true;
+e.preventDefault();
+}
+
+});
+
+window.addEventListener("keyup",e=>{
+
+const k=e.key.toLowerCase();
+
+if(k==="arrowleft"||k==="a")
+keys.left=false;
+
+if(k==="arrowright"||k==="d")
+keys.right=false;
+
+});
+
+
+/* BOTONES */
+
+function button(el,key){
+
+el.addEventListener("pointerdown",e=>{
+e.preventDefault();
+keys[key]=true;
+});
+
+["pointerup","pointercancel","pointerleave"].forEach(type=>{
+
+el.addEventListener(type,e=>{
+e.preventDefault();
+keys[key]=false;
+});
+
+});
+
+}
+
+button(
+document.getElementById("left"),
+"left"
 );
 
-buttonControl(
- document.getElementById("right"),
- "right"
+button(
+document.getElementById("right"),
+"right"
 );
 
 
-/* Arrastrar en móvil */
+/* CONTROL DIRECTO CON EL DEDO */
 
 canvas.addEventListener("pointermove",e=>{
- if(e.pointerType==="touch"){
-  const r=canvas.getBoundingClientRect();
-  const x=e.clientX-r.left;
 
-  paddle.x=x-paddle.w/2;
+if(e.pointerType!=="touch")return;
 
-  paddle.x=Math.max(
-   0,
-   Math.min(W-paddle.w,paddle.x)
-  );
- }
+const r=canvas.getBoundingClientRect();
+
+paddle.x=
+e.clientX-r.left-paddle.w/2;
+
+paddle.x=Math.max(
+0,
+Math.min(W-paddle.w,paddle.x)
+);
+
 });
 
 
-/* Reiniciar */
+/* REINICIAR */
 
-restart.addEventListener("click",start);
-
-
-/* Redimensionar */
-
-addEventListener("resize",resize);
+restart.addEventListener(
+"click",
+start
+);
 
 
-/* Arrancar */
+/* RESIZE */
+
+window.addEventListener(
+"resize",
+resize
+);
+
+
+/* INICIO */
 
 resize();
 start();
