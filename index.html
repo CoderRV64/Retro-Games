@@ -1,777 +1,371 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0, viewport-fit=cover"
-    >
-
-    <meta name="theme-color" content="#050505">
-    <meta
-        name="description"
-        content="Retro Games - Juegos retro propios"
-    >
-
-    <title>Retro Games</title>
-
-    <style>
-
-        :root {
-            --black: #050505;
-            --black-soft: #0a0a0a;
-            --green: #00ff66;
-            --green-dark: #008f3d;
-            --blue: #008cff;
-            --blue-dark: #00529b;
-            --white: #eafff2;
-            --gray: #789184;
-        }
-
-        * {
-            box-sizing: border-box;
-        }
-
-        html,
-        body {
-            margin: 0;
-            min-height: 100%;
-        }
-
-        body {
-            background: var(--black);
-            color: var(--white);
-            font-family: monospace;
-        }
-
-        /*
-         * Fondo con una pequeña cuadrícula
-         * para darle aspecto retro.
-         */
-
-        body::before {
-            content: "";
-            position: fixed;
-            inset: 0;
-            pointer-events: none;
-
-            background-image:
-                linear-gradient(
-                    rgba(0, 255, 102, 0.025) 1px,
-                    transparent 1px
-                ),
-                linear-gradient(
-                    90deg,
-                    rgba(0, 140, 255, 0.025) 1px,
-                    transparent 1px
-                );
-
-            background-size: 32px 32px;
-        }
-
-        .app {
-            position: relative;
-
-            width: min(1100px, 100%);
-            min-height: 100vh;
-
-            margin: 0 auto;
-            padding: 24px 16px 40px;
-        }
-
-        /*
-         * Cabecera
-         */
-
-        header {
-            text-align: center;
-            margin-bottom: 35px;
-        }
-
-        .logo {
-            margin: 0;
-
-            color: var(--green);
-
-            font-size: clamp(
-                2.2rem,
-                9vw,
-                4.5rem
-            );
-
-            font-weight: 900;
-            letter-spacing: 5px;
-            text-transform: uppercase;
-
-            text-shadow:
-                0 0 8px rgba(0, 255, 102, 0.5),
-                0 0 20px rgba(0, 255, 102, 0.2);
-        }
-
-        /*
-         * Línea decorativa
-         */
-
-        .header-line {
-            width: min(500px, 80%);
-            height: 3px;
-
-            margin: 15px auto 0;
-
-            background: linear-gradient(
-                90deg,
-                var(--green),
-                var(--blue)
-            );
-
-            box-shadow:
-                0 0 8px rgba(0, 255, 102, 0.4),
-                0 0 8px rgba(0, 140, 255, 0.4);
-        }
-
-        /*
-         * Lista de juegos
-         */
-
-        #games {
-            display: grid;
-
-            grid-template-columns:
-                repeat(
-                    auto-fit,
-                    minmax(230px, 1fr)
-                );
-
-            gap: 20px;
-        }
-
-        /*
-         * Tarjeta
-         */
-
-        .game-card {
-            position: relative;
-
-            display: flex;
-            flex-direction: column;
-
-            min-height: 250px;
-
-            padding: 20px;
-
-            background: var(--black-soft);
-
-            border: 2px solid var(--green-dark);
-
-            border-radius: 8px;
-
-            box-shadow:
-                0 0 12px rgba(0, 255, 102, 0.08);
-
-            transition:
-                transform 0.15s ease,
-                border-color 0.15s ease,
-                box-shadow 0.15s ease;
-        }
-
-        .game-card:hover {
-            transform: translateY(-5px);
-
-            border-color: var(--green);
-
-            box-shadow:
-                0 0 20px rgba(0, 255, 102, 0.2);
-        }
-
-        /*
-         * Esquina decorativa
-         */
-
-        .game-card::before {
-            content: "";
-
-            position: absolute;
-
-            top: -2px;
-            right: -2px;
-
-            width: 35px;
-            height: 35px;
-
-            border-top: 3px solid var(--blue);
-            border-right: 3px solid var(--blue);
-        }
-
-        /*
-         * Icono
-         */
-
-        .game-icon {
-            display: grid;
-            place-items: center;
-
-            width: 72px;
-            height: 72px;
-
-            margin-bottom: 18px;
-
-            background: #000;
-
-            border: 2px solid var(--blue-dark);
-
-            border-radius: 6px;
-
-            color: var(--blue);
-
-            font-size: 2rem;
-
-            box-shadow:
-                inset 0 0 12px rgba(0, 140, 255, 0.1);
-        }
-
-        /*
-         * Nombre
-         */
-
-        .game-name {
-            margin: 0 0 10px;
-
-            color: var(--green);
-
-            font-size: 1.4rem;
-
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        /*
-         * Descripción
-         */
-
-        .game-description {
-            flex: 1;
-
-            margin: 0 0 20px;
-
-            color: var(--gray);
-
-            line-height: 1.5;
-        }
-
-        /*
-         * Botón jugar
-         */
-
-        .play-button {
-            display: block;
-
-            width: 100%;
-
-            padding: 14px;
-
-            background: transparent;
-
-            border: 2px solid var(--blue);
-
-            border-radius: 5px;
-
-            color: var(--blue);
-
-            text-align: center;
-            text-decoration: none;
-
-            font-weight: 900;
-
-            text-transform: uppercase;
-            letter-spacing: 2px;
-
-            transition:
-                background 0.15s ease,
-                color 0.15s ease,
-                box-shadow 0.15s ease;
-        }
-
-        .play-button:hover {
-            background: var(--blue);
-
-            color: #000;
-
-            box-shadow:
-                0 0 15px rgba(0, 140, 255, 0.4);
-        }
-
-        .play-button:active {
-            transform: scale(0.98);
-        }
-
-        /*
-         * Error
-         */
-
-        .error {
-            grid-column: 1 / -1;
-
-            padding: 20px;
-
-            background: #090909;
-
-            border: 2px solid var(--blue-dark);
-
-            border-radius: 6px;
-
-            color: var(--blue);
-
-            text-align: center;
-        }
-
-        .error strong {
-            color: var(--green);
-        }
-
-        /*
-         * Footer
-         */
-
-        footer {
-            margin-top: 45px;
-
-            color: #3e5549;
-
-            text-align: center;
-
-            font-size: 0.8rem;
-        }
-
-        /*
-         * Móvil
-         */
-
-        @media (max-width: 500px) {
-
-            .app {
-                padding:
-                    20px
-                    12px
-                    30px;
-            }
-
-            header {
-                margin-bottom: 28px;
-            }
-
-            .logo {
-                letter-spacing: 3px;
-            }
-
-            #games {
-                grid-template-columns: 1fr;
-            }
-
-            .game-card {
-                min-height: 220px;
-            }
-        }
-
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tienda de Apps Descentralizada</title>
+  
+  <!-- Parser YAML para leer apps.yaml nativamente -->
+  <script src="https://cdn.jsdelivr.net/npm/js-yaml@4.1.0/dist/js-yaml.min.js"></script>
+
+  <!-- Carga directa de apps.yaml sin usar fetch (evita bloqueos CORS en file://) -->
+  <script id="yaml-data" type="text/yaml" src="apps.yaml"></script>
+
+  <style>
+    :root {
+      --bg-color: #0f172a;
+      --card-bg: #1e293b;
+      --accent: #38bdf8;
+      --text: #f8fafc;
+      --text-muted: #94a3b8;
+      --pwa-badge: #a855f7;
+      --apk-badge: #10b981;
+      --fdroid-badge: #f59e0b;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    }
+
+    body {
+      background-color: var(--bg-color);
+      color: var(--text);
+      padding: 16px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    header {
+      margin-bottom: 24px;
+    }
+
+    h1 {
+      font-size: 1.8rem;
+      color: var(--text);
+      margin-bottom: 8px;
+    }
+
+    .controls {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+
+    @media(min-width: 640px) {
+      .controls {
+        flex-direction: row;
+      }
+    }
+
+    input[type="text"] {
+      flex: 1;
+      padding: 12px 16px;
+      border-radius: 8px;
+      border: 1px solid #334155;
+      background-color: var(--card-bg);
+      color: var(--text);
+      outline: none;
+      font-size: 1rem;
+    }
+
+    select {
+      padding: 12px 16px;
+      border-radius: 8px;
+      border: 1px solid #334155;
+      background-color: var(--card-bg);
+      color: var(--text);
+      outline: none;
+      font-size: 1rem;
+    }
+
+    .app-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 16px;
+    }
+
+    .app-card {
+      background-color: var(--card-bg);
+      border-radius: 12px;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      border: 1px solid #334155;
+      transition: transform 0.2s;
+    }
+
+    .app-card:hover {
+      transform: translateY(-2px);
+    }
+
+    .app-header {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+
+    .app-icon {
+      width: 56px;
+      height: 56px;
+      border-radius: 12px;
+      object-fit: cover;
+      background-color: #334155;
+    }
+
+    .app-info {
+      flex: 1;
+      overflow: hidden;
+    }
+
+    .app-title {
+      font-size: 1.1rem;
+      font-weight: 600;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .app-category {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+
+    .app-description {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      margin-bottom: 16px;
+      line-height: 1.4;
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .card-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .badge {
+      font-size: 0.75rem;
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-weight: bold;
+      text-transform: uppercase;
+    }
+
+    .badge-DIRECT_APK { background-color: var(--apk-badge); color: #000; }
+    .badge-IZZY_FDROID { background-color: var(--fdroid-badge); color: #000; }
+    .badge-PWA { background-color: var(--pwa-badge); color: #fff; }
+
+    .btn-action {
+      background-color: var(--accent);
+      color: #000;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 6px;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-block;
+      text-align: center;
+      font-size: 0.9rem;
+    }
+
+    .btn-action:hover {
+      opacity: 0.9;
+    }
+
+    .loading {
+      text-align: center;
+      padding: 40px;
+      font-size: 1.2rem;
+      color: var(--text-muted);
+    }
+  </style>
 </head>
-
 <body>
 
-<div class="app">
-
-    <header>
-
-        <h1 class="logo">
-            Retro Games
-        </h1>
-
-        <div class="header-line"></div>
-
-    </header>
-
-
-    <main>
-
-        <section
-            id="games"
-            aria-label="Lista de juegos"
-        >
-
-            <p>
-                Cargando juegos...
-            </p>
-
-        </section>
-
-    </main>
-
-
-    <footer>
-
-        RETRO GAMES
-
-    </footer>
-
-</div>
-
-
-<script>
-
-    /*
-     * URL del catálogo.
-     *
-     * Se utiliza raw.githubusercontent.com para evitar
-     * problemas al cargar Games.yaml desde GitHub Pages.
-     */
-
-    const GAMES_URL =
-        "https://raw.githubusercontent.com/" +
-        "CoderRV64/Retro-Games/main/Games.yaml";
-
-
-    async function loadGames() {
-
-        const container =
-            document.getElementById("games");
-
-
-        try {
-
-            const response =
-                await fetch(
-                    GAMES_URL,
-                    {
-                        cache: "no-cache"
-                    }
-                );
-
-
-            if (!response.ok) {
-
-                throw new Error(
-                    "HTTP " + response.status
-                );
-
-            }
-
-
-            const yaml =
-                await response.text();
-
-
-            const games =
-                parseGamesYaml(yaml);
-
-
-            if (games.length === 0) {
-
-                throw new Error(
-                    "No hay juegos en Games.yaml"
-                );
-
-            }
-
-
-            container.innerHTML = "";
-
-
-            games.forEach(game => {
-
-                const card =
-                    document.createElement("article");
-
-
-                card.className =
-                    "game-card";
-
-
-                card.innerHTML = `
-
-                    <div class="game-icon">
-                        🎮
-                    </div>
-
-                    <h2 class="game-name">
-                        ${escapeHTML(game.name)}
-                    </h2>
-
-                    <p class="game-description">
-                        ${escapeHTML(
-                            game.description ||
-                            "Un juego retro propio."
-                        )}
-                    </p>
-
-                    <a
-                        class="play-button"
-                        href="${escapeAttribute(game.url)}"
-                    >
-                        Jugar
-                    </a>
-
-                `;
-
-
-                container.appendChild(card);
-
-            });
-
-
-        } catch (error) {
-
-            console.error(
-                "Retro Games:",
-                error
-            );
-
-
-            container.innerHTML = `
-
-                <div class="error">
-
-                    <strong>
-                        No se pudo cargar la lista de juegos.
-                    </strong>
-
-                    <p>
-                        Comprueba que Games.yaml
-                        exista en la rama main.
-                    </p>
-
-                </div>
-
-            `;
-
+  <header>
+    <h1>Tienda Abierta</h1>
+    <p style="color: var(--text-muted);">Apps directas, F-Droid y WebApps sin intermediarios</p>
+  </header>
+
+  <div class="controls">
+    <input type="text" id="searchInput" placeholder="Buscar aplicaciones..." />
+    <select id="categoryFilter">
+      <option value="ALL">Todas las Categorías</option>
+    </select>
+  </div>
+
+  <div id="loading" class="loading">Cargando catálogo...</div>
+  <div id="appGrid" class="app-grid"></div>
+
+  <script>
+    let rawAppsList = [];
+
+    // Fallback dinámico en SVG para evitar dependencias externas fallidas
+    const defaultIcon = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='56' height='56' viewBox='0 0 56 56'><rect width='56' height='56' rx='12' fill='%23334155'/><text x='50%' y='55%' dominant-baseline='middle' text-anchor='middle' fill='%23f8fafc' font-size='20' font-family='sans-serif'>App</text></svg>";
+
+    // Detectar si la web corre dentro de la App Móvil con Capacitor
+    const isNativeApp = () => {
+      return typeof window.Capacitor !== 'undefined' && window.Capacitor.isNativePlatform();
+    };
+
+    // 1. Cargar catálogo leyendo la etiqueta script
+    function loadCatalog() {
+      try {
+        const yamlScript = document.getElementById('yaml-data');
+        const yamlText = yamlScript ? (yamlScript.textContent || yamlScript.innerText) : '';
+        
+        if (!yamlText.trim()) {
+          throw new Error("No se pudo leer el contenido del archivo apps.yaml.");
         }
 
+        // Convertir YAML a JSON en tiempo de ejecución
+        rawAppsList = jsyaml.load(yamlText) || [];
+        
+        document.getElementById('loading').style.display = 'none';
+        populateCategories();
+        renderApps(rawAppsList);
+      } catch (error) {
+        console.error("Error cargando el catálogo:", error);
+        document.getElementById('loading').innerText = "Error cargando el catálogo de aplicaciones.";
+      }
     }
 
+    // 2. Extraer categorías únicas para el desplegable
+    function populateCategories() {
+      const categories = [...new Set(rawAppsList.map(app => app.category).filter(Boolean))];
+      const select = document.getElementById('categoryFilter');
+      
+      // Limpiar opciones previas excepto la primera
+      select.innerHTML = '<option value="ALL">Todas las Categorías</option>';
 
-    /*
-     * Parser sencillo de Games.yaml.
-     */
+      categories.forEach(cat => {
+        const option = document.createElement('option');
+        option.value = cat;
+        option.innerText = cat;
+        select.appendChild(option);
+      });
+    }
 
-    function parseGamesYaml(yaml) {
+    // 3. Dibujar las tarjetas en la pantalla
+    function renderApps(apps) {
+      const grid = document.getElementById('appGrid');
+      grid.innerHTML = '';
 
-        const games = [];
+      if (!apps || apps.length === 0) {
+        grid.innerHTML = '<p style="color: var(--text-muted); grid-column: 1/-1; text-align: center;">No se encontraron aplicaciones.</p>';
+        return;
+      }
 
-        let currentGame = null;
+      apps.forEach(app => {
+        const card = document.createElement('div');
+        card.className = 'app-card';
 
+        // Etiqueta legible según el tipo de instalación
+        let badgeLabel = 'APK Directo';
+        if (app.installType === 'IZZY_FDROID') badgeLabel = 'F-Droid/Izzy';
+        if (app.installType === 'PWA') badgeLabel = 'Web / PWA';
 
-        const lines =
-            yaml.split(/\r?\n/);
-
-
-        for (const line of lines) {
-
-            const trimmed =
-                line.trim();
-
-
-            if (
-                !trimmed ||
-                trimmed.startsWith("#") ||
-                trimmed === "games:"
-            ) {
-                continue;
-            }
-
-
-            if (
-                trimmed.startsWith("- id:")
-            ) {
-
-                if (currentGame) {
-
-                    games.push(
-                        currentGame
-                    );
-
-                }
-
-
-                currentGame = {
-
-                    id:
-                        getValue(trimmed),
-
-                    name: "",
-
-                    url: "",
-
-                    description: ""
-
-                };
-
-
-                continue;
-
-            }
-
-
-            if (!currentGame) {
-                continue;
-            }
-
-
-            if (
-                trimmed.startsWith("name:")
-            ) {
-
-                currentGame.name =
-                    getValue(trimmed);
-
-            }
-
-
-            else if (
-                trimmed.startsWith("url:")
-            ) {
-
-                currentGame.url =
-                    getValue(trimmed);
-
-            }
-
-
-            else if (
-                trimmed.startsWith("description:")
-            ) {
-
-                currentGame.description =
-                    getValue(trimmed);
-
-            }
-
+        // Texto del botón según plataforma y entorno
+        let buttonText = 'Instalar';
+        if (app.installType === 'PWA') {
+          buttonText = 'Abrir Web';
+        } else if (!isNativeApp()) {
+          buttonText = 'Descargar';
         }
 
+        const iconSrc = app.iconUrl || defaultIcon;
 
-        if (currentGame) {
+        card.innerHTML = `
+          <div>
+            <div class="app-header">
+              <img class="app-icon" src="${iconSrc}" alt="${app.name}" onerror="this.onerror=null; this.src='${defaultIcon}';" />
+              <div class="app-info">
+                <div class="app-title">${app.name || 'Sin título'}</div>
+                <div class="app-category">${app.category || 'General'}</div>
+              </div>
+            </div>
+            <p class="app-description">${app.description || 'Sin descripción disponible.'}</p>
+          </div>
+          
+          <div class="card-footer">
+            <span class="badge badge-${app.installType}">${badgeLabel}</span>
+            <button class="btn-action" data-id="${app.id}">${buttonText}</button>
+          </div>
+        `;
 
-            games.push(
-                currentGame
-            );
+        // Asignar evento click de forma segura sin usar onclick inline
+        const btn = card.querySelector('.btn-action');
+        btn.addEventListener('click', () => handleInstall(app.id));
 
+        grid.appendChild(card);
+      });
+    }
+
+    // 4. Lógica de instalación adaptada (Web vs Nativo)
+    function handleInstall(appId) {
+      const app = rawAppsList.find(a => a.id === appId);
+      if (!app) return;
+
+      // CASO A: Es una PWA (Funciona igual en Web y App)
+      if (app.installType === 'PWA') {
+        window.open(app.url, '_blank');
+        return;
+      }
+
+      // Determinar la URL objetivo del archivo ejecutable
+      let downloadTargetUrl = app.url;
+      if (app.installType === 'IZZY_FDROID') {
+        downloadTargetUrl = app.repoUrl;
+      }
+
+      // CASO B: El usuario está dentro de la FUTURA APP MÓVIL (Nativo)
+      if (isNativeApp()) {
+        console.log("Invocando puente nativo para instalar:", downloadTargetUrl);
+        if (window.Capacitor.Plugins && window.Capacitor.Plugins.NativeInstaller) {
+          window.Capacitor.Plugins.NativeInstaller.downloadAndInstall({ url: downloadTargetUrl, packageName: app.package });
+        } else {
+          alert("Llamando al instalador nativo para: " + app.name);
         }
-
-
-        return games.filter(
-            game =>
-                game.id &&
-                game.name &&
-                game.url
-        );
-
+      } 
+      // CASO C: El usuario está visitando desde la WEB TRADICIONAL
+      else {
+        window.location.href = downloadTargetUrl;
+      }
     }
 
+    // 5. Filtrado en tiempo real (Buscador y Categoría)
+    function filterApps() {
+      const search = document.getElementById('searchInput').value.toLowerCase().trim();
+      const selectedCategory = document.getElementById('categoryFilter').value;
 
-    function getValue(line) {
+      const filtered = rawAppsList.filter(app => {
+        const matchesSearch = (app.name && app.name.toLowerCase().includes(search)) || 
+                              (app.description && app.description.toLowerCase().includes(search));
+        const matchesCategory = selectedCategory === 'ALL' || app.category === selectedCategory;
+        
+        return matchesSearch && matchesCategory;
+      });
 
-        let value =
-            line
-                .substring(
-                    line.indexOf(":") + 1
-                )
-                .trim();
-
-
-        if (
-
-            (
-                value.startsWith('"') &&
-                value.endsWith('"')
-            )
-
-            ||
-
-            (
-                value.startsWith("'") &&
-                value.endsWith("'")
-            )
-
-        ) {
-
-            value =
-                value.substring(
-                    1,
-                    value.length - 1
-                );
-
-        }
-
-
-        return value;
-
+      renderApps(filtered);
     }
 
+    // Eventos de entrada
+    document.getElementById('searchInput').addEventListener('input', filterApps);
+    document.getElementById('categoryFilter').addEventListener('change', filterApps);
 
-    function escapeHTML(value) {
-
-        return String(value)
-
-            .replaceAll(
-                "&",
-                "&amp;"
-            )
-
-            .replaceAll(
-                "<",
-                "&lt;"
-            )
-
-            .replaceAll(
-                ">",
-                "&gt;"
-            )
-
-            .replaceAll(
-                '"',
-                "&quot;"
-            )
-
-            .replaceAll(
-                "'",
-                "&#039;"
-            );
-
-    }
-
-
-    function escapeAttribute(value) {
-
-        return String(value)
-
-            .replaceAll(
-                "&",
-                "&amp;"
-            )
-
-            .replaceAll(
-                '"',
-                "&quot;"
-            )
-
-            .replaceAll(
-                "<",
-                "&lt;"
-            )
-
-            .replaceAll(
-                ">",
-                "&gt;"
-            );
-
-    }
-
-
-    /*
-     * Iniciar catálogo.
-     */
-
-    loadGames();
-
-</script>
-
+    // Inicializar cuando la página y recursos DOM terminen de cargar
+    window.addEventListener('DOMContentLoaded', loadCatalog);
+  </script>
 </body>
 </html>
