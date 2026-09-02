@@ -5,11 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Tienda de Apps Descentralizada</title>
   
-  <!-- Parser YAML para leer apps.yaml nativamente -->
+  <!-- Parser YAML -->
   <script src="https://cdn.jsdelivr.net/npm/js-yaml@4.1.0/dist/js-yaml.min.js"></script>
-
-  <!-- Carga directa de apps.yaml sin usar fetch (evita bloqueos CORS en file://) -->
-  <script id="yaml-data" type="text/yaml" src="apps.yaml"></script>
 
   <style>
     :root {
@@ -61,8 +58,7 @@
       }
     }
 
-    input[type="text"] {
-      flex: 1;
+    input[type="text"], select {
       padding: 12px 16px;
       border-radius: 8px;
       border: 1px solid #334155;
@@ -72,14 +68,8 @@
       font-size: 1rem;
     }
 
-    select {
-      padding: 12px 16px;
-      border-radius: 8px;
-      border: 1px solid #334155;
-      background-color: var(--card-bg);
-      color: var(--text);
-      outline: none;
-      font-size: 1rem;
+    input[type="text"] {
+      flex: 1;
     }
 
     .app-grid {
@@ -210,26 +200,21 @@
 
   <script>
     let rawAppsList = [];
-
-    // Fallback dinámico en SVG para evitar dependencias externas fallidas
     const defaultIcon = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='56' height='56' viewBox='0 0 56 56'><rect width='56' height='56' rx='12' fill='%23334155'/><text x='50%' y='55%' dominant-baseline='middle' text-anchor='middle' fill='%23f8fafc' font-size='20' font-family='sans-serif'>App</text></svg>";
 
-    // Detectar si la web corre dentro de la App Móvil con Capacitor
     const isNativeApp = () => {
       return typeof window.Capacitor !== 'undefined' && window.Capacitor.isNativePlatform();
     };
 
-    // 1. Cargar catálogo leyendo la etiqueta script
-    function loadCatalog() {
+    // Descarga directa del YAML en GitHub Pages
+    async function loadCatalog() {
       try {
-        const yamlScript = document.getElementById('yaml-data');
-        const yamlText = yamlScript ? (yamlScript.textContent || yamlScript.innerText) : '';
-        
-        if (!yamlText.trim()) {
-          throw new Error("No se pudo leer el contenido del archivo apps.yaml.");
+        const response = await fetch('./apps.yaml');
+        if (!response.ok) {
+          throw new Error('No se pudo obtener el archivo apps.yaml');
         }
+        const yamlText = await response.text();
 
-        // Convertir YAML a JSON en tiempo de ejecución
         rawAppsList = jsyaml.load(yamlText) || [];
         
         document.getElementById('loading').style.display = 'none';
@@ -241,12 +226,9 @@
       }
     }
 
-    // 2. Extraer categorías únicas para el desplegable
     function populateCategories() {
       const categories = [...new Set(rawAppsList.map(app => app.category).filter(Boolean))];
       const select = document.getElementById('categoryFilter');
-      
-      // Limpiar opciones previas excepto la primera
       select.innerHTML = '<option value="ALL">Todas las Categorías</option>';
 
       categories.forEach(cat => {
@@ -257,7 +239,6 @@
       });
     }
 
-    // 3. Dibujar las tarjetas en la pantalla
     function renderApps(apps) {
       const grid = document.getElementById('appGrid');
       grid.innerHTML = '';
@@ -271,12 +252,10 @@
         const card = document.createElement('div');
         card.className = 'app-card';
 
-        // Etiqueta legible según el tipo de instalación
         let badgeLabel = 'APK Directo';
         if (app.installType === 'IZZY_FDROID') badgeLabel = 'F-Droid/Izzy';
         if (app.installType === 'PWA') badgeLabel = 'Web / PWA';
 
-        // Texto del botón según plataforma y entorno
         let buttonText = 'Instalar';
         if (app.installType === 'PWA') {
           buttonText = 'Abrir Web';
@@ -304,7 +283,6 @@
           </div>
         `;
 
-        // Asignar evento click de forma segura sin usar onclick inline
         const btn = card.querySelector('.btn-action');
         btn.addEventListener('click', () => handleInstall(app.id));
 
@@ -312,39 +290,28 @@
       });
     }
 
-    // 4. Lógica de instalación adaptada (Web vs Nativo)
     function handleInstall(appId) {
       const app = rawAppsList.find(a => a.id === appId);
       if (!app) return;
 
-      // CASO A: Es una PWA (Funciona igual en Web y App)
       if (app.installType === 'PWA') {
         window.open(app.url, '_blank');
         return;
       }
 
-      // Determinar la URL objetivo del archivo ejecutable
-      let downloadTargetUrl = app.url;
-      if (app.installType === 'IZZY_FDROID') {
-        downloadTargetUrl = app.repoUrl;
-      }
+      let downloadTargetUrl = app.installType === 'IZZY_FDROID' ? app.repoUrl : app.url;
 
-      // CASO B: El usuario está dentro de la FUTURA APP MÓVIL (Nativo)
       if (isNativeApp()) {
-        console.log("Invocando puente nativo para instalar:", downloadTargetUrl);
         if (window.Capacitor.Plugins && window.Capacitor.Plugins.NativeInstaller) {
           window.Capacitor.Plugins.NativeInstaller.downloadAndInstall({ url: downloadTargetUrl, packageName: app.package });
         } else {
           alert("Llamando al instalador nativo para: " + app.name);
         }
-      } 
-      // CASO C: El usuario está visitando desde la WEB TRADICIONAL
-      else {
+      } else {
         window.location.href = downloadTargetUrl;
       }
     }
 
-    // 5. Filtrado en tiempo real (Buscador y Categoría)
     function filterApps() {
       const search = document.getElementById('searchInput').value.toLowerCase().trim();
       const selectedCategory = document.getElementById('categoryFilter').value;
@@ -360,11 +327,9 @@
       renderApps(filtered);
     }
 
-    // Eventos de entrada
     document.getElementById('searchInput').addEventListener('input', filterApps);
     document.getElementById('categoryFilter').addEventListener('change', filterApps);
 
-    // Inicializar cuando la página y recursos DOM terminen de cargar
     window.addEventListener('DOMContentLoaded', loadCatalog);
   </script>
 </body>
