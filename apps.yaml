@@ -1,0 +1,230 @@
+# ==============================================================================
+# CATÁLOGO DE APLICACIONES UNIFICADO (APKs Directos + Izzy/F-Droid + PWAs)
+# ==============================================================================
+
+# ------------------------------------------------------------------------------
+# CATEGORÍA: MULTIMEDIA & STREAMING
+# ------------------------------------------------------------------------------
+- id: org.schabi.newpipe
+  name: "NewPipe"
+  category: "Multimedia"
+  description: "Cliente liviano para YouTube sin anuncios, con reproducción en segundo plano y descargas."
+  installType: "IZZY_FDROID"
+  package: "org.schabi.newpipe"
+  repoUrl: "https://apt.izzysoft.de/fdroid/index/apk/org.schabi.newpipe"
+  iconUrl: "https://raw.githubusercontent.com/TeamNewPipe/NewPipe/dev/app/src/main/res/mipmap-xxxhdpi/ic_launcher.png"
+
+- id: com.github.libretube
+  name: "LibreTube"
+  category: "Multimedia"
+  description: "Alternativa a YouTube basada en Piped con diseño Material You y sin cuenta de Google."
+  installType: "IZZY_FDROID"
+  package: "com.github.libretube"
+  repoUrl: "https://apt.izzysoft.de/fdroid/index/apk/com.github.libretube"
+  iconUrl: "https://raw.githubusercontent.com/libre-tube/LibreTube/main/assets/logo.png"
+
+- id: com.vanced.android.youtube
+  name: "ReVanced Extended (Manager)"
+  category: "Multimedia"
+  description: "Administrador para parchear YouTube y YouTube Music agregando bloqueo de anuncios y SponsorBlock."
+  installType: "IZZY_FDROID"
+  package: "app.revanced.manager"
+  repoUrl: "https://apt.izzysoft.de/fdroid/index/apk/app.revanced.manager"
+  iconUrl: "https://revanced.app/assets/logo.png"
+
+- id: org.videolan.vlc
+  name: "VLC Media Player"
+  category: "Multimedia"
+  description: "Reproductor multimedia universal de código abierto compatible con todos los formatos de video/audio."
+  installType: "DIRECT_APK"
+  url: "https://get.videolan.org/vlc-android/3.5.4/VLC-Android-3.5.4-arm64-v8a.apk"
+  iconUrl: "https://www.videolan.org/images/largeVLC.png"
+
+- id: pwa.spotify
+  name: "Spotify Web"
+  category: "Multimedia"
+  description: "Reproductor web de música y podcasts en streaming."
+  installType: "PWA"
+  url: "https://open.spotify.com"
+  iconUrl: "https://open.spotifycdn.com/cdn/images/favicon.0f31d2ea.ico"
+
+# ------------------------------------------------------------------------------
+# CATEGORÍA: MENSAJERÍA & COMUNICACIÓN
+# ------------------------------------------------------------------------------
+- id: com.whatsapp
+  name: "WhatsApp Messenger"
+  category: "Mensajería"
+  description: "Aplicación oficial de mensajería instantánea distribuida de forma directa por Meta."
+  installType: "DIRECT_APK"
+  url: "https://www.whatsapp.com/android/current_version.apk"
+  iconUrl: "https://static.whatsapp.net/rsrc.php/v3/yP/r/r21R_3S2A.png"
+
+- id: org.telegram.messenger
+  name: "Telegram (Versión Web Directa)"
+  category: "Mensajería"
+  description: "Versión oficial de Telegram sin las restricciones de contenido impuestas por la Play Store."
+  installType: "DIRECT_APK"
+  url: "https://telegram.org/dl/android/apk"
+  iconUrl: "https://telegram.org/img/t_logo.png"
+
+- id: org.thoughtcrime.securesms
+  name: "Signal"
+  category: "Mensajería"
+  description: "Mensajería privada cifrada de extremo a extremo distribuida con auto-actualización oficial."
+  installType: "DIRECT_APK"
+  url: "https://updates.signal.org/android/Signal-website-universal-latest.apk"
+  iconUrl: "https://signal.org/assets/header/logo-f11904.png"
+
+- id: us.zoom.videomeetings
+  name: "Zoom Workplace"
+  category: "Comunicación"
+  description: "Cliente oficial para videollamadas y reuniones corporativas."
+  installType: "DIRECT_APK"
+  url: "https://zoom.us/client/latest/Zoom.apk"
+  iconUrl: "https://st1.zoom.us/zoom.ico"
+
+# ------------------------------------------------------------------------------
+# CATEGORÍA: PRIVACIDAD, VPN & SEGURIDAD
+# ------------------------------------------------------------------------------
+- id: com.adguard.android
+  name: "AdGuard Global"
+  category: "Seguridad"
+  description: "Bloqueador de anuncios a nivel de sistema, rastreadores y cortafuegos completo."
+  installType: "DIRECT_APK"
+  url: "https://adguard.com/static/android/adguard-android-installer.apk"
+  iconUrl: "https://cdn.adguard.com/public/Website/favicon/android-chrome-512x512.png"
+
+- id: com.mullvad.mullvadvpn
+  name: "Mullvad VPN"
+  category: "Privacidad"
+  description: "Servicio de VPN enfocado en el anonimato absoluto sin registro de datos personales."
+  installType: "IZZY_FDROID"
+  package: "net.mullvad.mullvadvpn"
+  repoUrl: "https://apt.izzysoft.de/fdroid/index/apk/net.mullvad.mullvadvpn"
+  iconUrl: "https://mullvad.net/static/ico/favicon-32x32.png"
+
+- id: com.bitwarden.authenticator
+  name: "Bitwarden / Authenticator"
+  category: "Seguridad"
+  description: "Gestor de contraseñas y autenticación en dos pasos de código abierto."
+  installType: "IZZY_FDROID"
+  package: "com.x8bit.bitwarden"
+  repoUrl: "https://apt.izzysoft.de/fdroid/index/apk/com.x8bit.bitwarden"
+  iconUrl: "https://bitwarden.com/images/icon_512.png"
+
+- id: me.proton.mail
+  name: "Proton Mail & Drive"
+  category: "Privacidad"
+  description: "Correo electrónico y almacenamiento en la nube con cifrado de conocimiento cero."
+  installType: "IZZY_FDROID"
+  package: "ch.protonmail.android"
+  repoUrl: "https://apt.izzysoft.de/fdroid/index/apk/ch.protonmail.android"
+  iconUrl: "https://proton.me/favicons/apple-touch-icon.png"
+
+# ------------------------------------------------------------------------------
+# CATEGORÍA: NAVEGADORES WEB
+# ------------------------------------------------------------------------------
+- id: com.brave.browser
+  name: "Brave Browser"
+  category: "Navegadores"
+  description: "Navegador ultrarrápido con bloqueo nativo de publicidad, anuncios de video y rastreadores."
+  installType: "DIRECT_APK"
+  url: "https://github.com/brave/brave-browser/releases/download/v1.68.134/BraveMonoarm64.apk"
+  iconUrl: "https://brave.com/static-assets/images/brave-logo-sans-text.svg"
+
+- id: com.opera.browser
+  name: "Opera GX Mobile"
+  category: "Navegadores"
+  description: "Navegador enfocado en gaming con limitadores de recursos y bloqueador de anuncios."
+  installType: "DIRECT_APK"
+  url: "https://net.geo.opera.com/partner/mobile/apk"
+  iconUrl: "https://www.opera.com/favicon.ico"
+
+- id: com.duckduckgo.mobile.android
+  name: "DuckDuckGo Privacy Browser"
+  category: "Navegadores"
+  description: "Navegador con protección de privacidad, bloqueo de cookies de rastreo y motor de búsqueda privado."
+  installType: "IZZY_FDROID"
+  package: "com.duckduckgo.mobile.android"
+  repoUrl: "https://apt.izzysoft.de/fdroid/index/apk/com.duckduckgo.mobile.android"
+  iconUrl: "https://duckduckgo.com/assets/logo_header.v109.png"
+
+- id: org.torproject.torbrowser
+  name: "Tor Browser"
+  category: "Navegadores"
+  description: "Navegar con máxima privacidad y aislamiento frente al rastreo y la vigilancia en red."
+  installType: "DIRECT_APK"
+  url: "https://www.torproject.org/dist/torbrowser/13.5.1/tor-browser-android-13.5.1_multi.apk"
+  iconUrl: "https://www.torproject.org/static/images/tor-logo@2x.png"
+
+# ------------------------------------------------------------------------------
+# CATEGORÍA: INTELIGENCIA ARTIFICIAL & HERRAMIENTAS WEB (PWAs)
+# ------------------------------------------------------------------------------
+- id: pwa.chatgpt
+  name: "ChatGPT (OpenAI)"
+  category: "Inteligencia Artificial"
+  description: "Acceso web directo al modelo de lenguaje oficial de OpenAI."
+  installType: "PWA"
+  url: "https://chatgpt.com"
+  iconUrl: "https://oaistatic-cdn.azureedge.net/chatgpt/static/favicon.ico"
+
+- id: pwa.meta.ai
+  name: "Meta AI"
+  category: "Inteligencia Artificial"
+  description: "Asistente de inteligencia artificial de Meta para generación de texto e imágenes."
+  installType: "PWA"
+  url: "https://www.meta.ai"
+  iconUrl: "https://static.xx.fbcdn.net/rsrc.php/y1/r/358qD-tG1-v.ico"
+
+- id: pwa.claude
+  name: "Claude AI (Anthropic)"
+  category: "Inteligencia Artificial"
+  description: "Asistente conversacional enfocado en razonamiento avanzado y análisis de texto."
+  installType: "PWA"
+  url: "https://claude.ai"
+  iconUrl: "https://claude.ai/favicon.ico"
+
+- id: pwa.instagram
+  name: "Instagram Web"
+  category: "Redes Sociales"
+  description: "Versión ligera PWA para navegar, subir fotos y ver historias sin la app pesada."
+  installType: "PWA"
+  url: "https://www.instagram.com"
+  iconUrl: "https://static.cdninstagram.com/rsrc.php/v3/yI/r/VsNE-OH2A38.png"
+
+- id: pwa.tiktok
+  name: "TikTok Web"
+  category: "Redes Sociales"
+  description: "Visualizador PWA de videos cortos sin instalación de ejecutables."
+  installType: "PWA"
+  url: "https://www.tiktok.com"
+  iconUrl: "https://sf16-website-login.xiguaimg.com/obj/tiktok-web-site/ico.ico"
+
+# ------------------------------------------------------------------------------
+# CATEGORÍA: TIENDAS DE JUEGOS & GAMING
+# ------------------------------------------------------------------------------
+- id: com.epicgames.portal
+  name: "Epic Games Store / Fortnite"
+  category: "Juegos"
+  description: "Lanzador oficial para instalar Fortnite, Fall Guys y la tienda de Epic Games."
+  installType: "DIRECT_APK"
+  url: "https://launcher.store.epicgames.com/getinstaller"
+  iconUrl: "https://cdn2.unrealengine.com/epic-games-store-button-1920x1080-352220182.png"
+
+- id: com.taptap.global
+  name: "TapTap Global"
+  category: "Juegos"
+  description: "La comunidad y tienda independiente de juegos móviles internacionales más grande."
+  installType: "DIRECT_APK"
+  url: "https://d.taptap.io/latest/ TapTap_global.apk"
+  iconUrl: "https://img.tapimg.com/market/images/d37532bc13d506941198.png"
+
+- id: org.retroarch
+  name: "RetroArch"
+  category: "Juegos"
+  description: "Motor y frontend de emulación de consolas clásicas sin anuncios ni micropagos."
+  installType: "IZZY_FDROID"
+  package: "org.retroarch"
+  repoUrl: "https://apt.izzysoft.de/fdroid/index/apk/org.retroarch"
+  iconUrl: "https://www.retroarch.com/images/retroarch-logo.png"
+  
