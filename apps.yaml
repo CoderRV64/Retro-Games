@@ -12,7 +12,7 @@
   installType: "IZZY_FDROID"
   package: "org.schabi.newpipe"
   repoUrl: "https://apt.izzysoft.de/fdroid/index/apk/org.schabi.newpipe"
-  iconUrl: "https://raw.githubusercontent.com/TeamNewPipe/NewPipe/dev/app/src/main/res/mipmap-xxxhdpi/ic_launcher.png"
+  iconUrl: "https://raw.githubusercontent.com/TeamNewPipe/NewPipe/HEAD/app/src/main/res/mipmap-xxxhdpi/ic_launcher.png"
 
 - id: com.github.libretube
   name: "LibreTube"
@@ -21,7 +21,7 @@
   installType: "IZZY_FDROID"
   package: "com.github.libretube"
   repoUrl: "https://apt.izzysoft.de/fdroid/index/apk/com.github.libretube"
-  iconUrl: "https://raw.githubusercontent.com/libre-tube/LibreTube/main/assets/logo.png"
+  iconUrl: "https://raw.githubusercontent.com/libre-tube/LibreTube/HEAD/assets/logo.png"
 
 - id: com.vanced.android.youtube
   name: "ReVanced Extended (Manager)"
@@ -30,7 +30,7 @@
   installType: "IZZY_FDROID"
   package: "app.revanced.manager"
   repoUrl: "https://apt.izzysoft.de/fdroid/index/apk/app.revanced.manager"
-  iconUrl: "https://revanced.app/assets/logo.png"
+  iconUrl: "https://revanced.app/assets/logo.svg"
 
 - id: org.videolan.vlc
   name: "VLC Media Player"
@@ -204,19 +204,19 @@
 # CATEGORÍA: TIENDAS DE JUEGOS & GAMING
 # ------------------------------------------------------------------------------
 - id: com.epicgames.portal
-  name: "Epic Games Store / Fortnite"
+  name: "Epic Games Store"
   category: "Juegos"
-  description: "Lanzador oficial para instalar Fortnite, Fall Guys y la tienda de Epic Games."
+  description: "Lanzador oficial para instalar Fortnite, Fall Guys y la tienda de Epic Games en Android."
   installType: "DIRECT_APK"
-  url: "https://launcher.store.epicgames.com/getinstaller"
-  iconUrl: "https://cdn2.unrealengine.com/epic-games-store-button-1920x1080-352220182.png"
+  url: "https://store.epicgames.com/mobile"
+  iconUrl: "https://store.epicgames.com/favicon.ico"
 
 - id: com.taptap.global
   name: "TapTap Global"
   category: "Juegos"
   description: "La comunidad y tienda independiente de juegos móviles internacionales más grande."
   installType: "DIRECT_APK"
-  url: "https://d.taptap.io/latest/ TapTap_global.apk"
+  url: "https://d.taptap.io/latest/TapTap_global.apk"
   iconUrl: "https://img.tapimg.com/market/images/d37532bc13d506941198.png"
 
 - id: org.retroarch
